@@ -5,17 +5,15 @@
 
     <parent>
         <groupId>app.whatsapp</groupId>
-        <artifactId>whatsapp-parent</artifactId>
+        <artifactId>whatsapp</artifactId>
         <version>1.0-SNAPSHOT</version>
-        <relativePath>../whatsapp-parent</relativePath> <!-- lookup parent from repository -->
+        <relativePath>../pom.xml</relativePath> <!-- lookup parent from repository -->
     </parent>
 
     <groupId>app.whatsapp</groupId>
     <artifactId>common-web</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <name>common-web</name>
+    <version>${parent.version}</version>
     <packaging>jar</packaging>
-    <description>common-web module</description>
 
     <properties>
     </properties>
@@ -33,7 +31,7 @@
         <dependency>
             <groupId>app.whatsapp</groupId>
             <artifactId>common</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${parent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -1,6 +1,6 @@
 package app.whatsapp.profile.controllers;
 
-import app.whatsapp.commonweb.annotations.logging.Loggable;
+import app.whatsapp.commonweb.annotations.log.Log;
 import app.whatsapp.profile.entities.User;
 import app.whatsapp.commonweb.models.profile.response.ProfileResponse;
 import app.whatsapp.commonweb.models.profile.request.UpdateProfileRequest;
@@ -21,20 +21,20 @@ public class ProfileController {
     @Autowired
     private UpdateProfileProcessor updateProfileProcessor;
 
-    @Loggable
+    @Log
     @GetMapping("/get")
     public ProfileResponse getProfile(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         return new ProfileResponse(ECommonResponseCodes.SUCCESS, user);
     }
 
-    @Loggable
+    @Log
     @GetMapping("/get/{id}")
     public ProfileResponse getProfile(@PathVariable Long id) {
         return getProfileProcessor.process(id);
     }
 
-    @Loggable
+    @Log
     @PostMapping("/update")
     public UpdateProfileResponse updateProfile(@RequestBody UpdateProfileRequest request) {
         return updateProfileProcessor.process(request);

@@ -2,9 +2,7 @@ package app.whatsapp.commonweb.aspects;
 
 import app.whatsapp.common.constants.CommonConstants;
 import app.whatsapp.common.models.BaseResponse;
-import app.whatsapp.commonweb.annotations.logging.Log;
-import app.whatsapp.commonweb.annotations.logging.Loggable;
-import org.apache.commons.lang3.StringUtils;
+import app.whatsapp.commonweb.annotations.log.Log;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -26,7 +24,7 @@ public class LoggingAspect {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LoggingAspect.class);
 
-    @Around(value = "@annotation(app.whatsapp.commonweb.annotations.logging.Loggable)")
+    @Around(value = "@annotation(app.whatsapp.commonweb.annotations.log.Log)")
     public Object around(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         long startTime = System.currentTimeMillis();
         MethodSignature methodSignature = (MethodSignature) proceedingJoinPoint.getSignature();
@@ -34,13 +32,13 @@ public class LoggingAspect {
 
         boolean isControllerMethod = isControllerMethod(method);
 
-        Loggable loggable = method.getAnnotation(Loggable.class);
-        Set<Loggable.Context> loggableContexts = Set.of(loggable.contexts());
+        Log loggable = method.getAnnotation(Log.class);
+        Set<Log.Context> loggableContexts = Set.of(loggable.contexts());
 
         String fullMethodName = new StringBuilder(proceedingJoinPoint.getSignature().getDeclaringType().getCanonicalName())
                 .append(CommonConstants.SpecialChars.DOT)
                 .append(method.getName()).toString();
-        if (loggableContexts.contains(Loggable.Context.ARGS) || isControllerMethod) {
+        if (loggableContexts.contains(Log.Context.ARGS) || isControllerMethod) {
             Parameter[] parameters = method.getParameters();
             Map<String, String> loggableArgs = new HashMap<>();
             Object[] methodArgs = proceedingJoinPoint.getArgs();
@@ -58,11 +56,10 @@ public class LoggingAspect {
             LOGGER.info("Method args for \"{}\" are : {}", fullMethodName, loggableArgs);
         }
         Object returnValue = proceedingJoinPoint.proceed();
-        if (loggableContexts.contains(Loggable.Context.RETURN_VALUE) || (isControllerMethod && returnValue instanceof BaseResponse)) {
+        if (loggableContexts.contains(Log.Context.RETURN_VALUE) || (isControllerMethod && returnValue instanceof BaseResponse)) {
             LOGGER.info("Return value for \"{}\" is : {} ", fullMethodName, returnValue);
         }
-        long endTime = System.currentTimeMillis();
-        LOGGER.info("Time taken for \"{}\" execution is : {} milliseconds", fullMethodName, endTime - startTime);
+        LOGGER.info("Time taken for \"{}\" execution is : {} milliseconds", fullMethodName, System.currentTimeMillis() - startTime);
         return returnValue;
     }
 

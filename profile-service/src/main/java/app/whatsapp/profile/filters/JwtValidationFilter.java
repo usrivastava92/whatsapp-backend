@@ -24,8 +24,11 @@ public class JwtValidationFilter extends OncePerRequestFilter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtValidationFilter.class);
 
-    @Autowired
     private UserService userService;
+
+    public JwtValidationFilter(UserService userService) {
+        this.userService = userService;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain)

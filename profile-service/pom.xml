@@ -3,33 +3,30 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>app.whatsapp</groupId>
-    <artifactId>profile-service</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>profile-service</name>
-    <description>Profile service for Whatsapp</description>
-
     <parent>
-        <artifactId>whatsapp-parent</artifactId>
         <groupId>app.whatsapp</groupId>
+        <artifactId>whatsapp</artifactId>
         <version>1.0-SNAPSHOT</version>
-        <relativePath>../whatsapp-parent</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
+    <groupId>app.whatsapp</groupId>
+    <artifactId>profile-service</artifactId>
+    <version>${parent.version}</version>
+
     <properties>
-        <java.version>11</java.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>app.whatsapp</groupId>
             <artifactId>common</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${parent.version}</version>
         </dependency>
         <dependency>
             <groupId>app.whatsapp</groupId>
             <artifactId>common-web</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${parent.version}</version>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>

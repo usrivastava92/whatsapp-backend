@@ -28,6 +28,7 @@ public class User implements UserDetails, UserProfile {
     @Column(nullable = false)
     private String firstname;
     private String lastname;
+    @Column(nullable = false, unique = true)
     private String email;
     @Column(nullable = false, unique = true)
     private String contactNumber;
@@ -49,16 +50,6 @@ public class User implements UserDetails, UserProfile {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.EMPTY_SET;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public String getUsername() {
-        return username;
     }
 
     @Override

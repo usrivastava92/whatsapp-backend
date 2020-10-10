@@ -3,7 +3,6 @@ package app.whatsapp.commonweb.models.profile.response;
 import app.whatsapp.common.models.BaseResponse;
 import app.whatsapp.common.models.IResponseCode;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
@@ -11,7 +10,6 @@ import lombok.Data;
 public class LoginResponse extends BaseResponse {
 
     private String jwt;
-    @JsonProperty("userProfile")
     private ProfileResponse userProfile;
 
     public LoginResponse(IResponseCode responseCode){

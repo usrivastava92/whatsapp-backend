@@ -1,6 +1,6 @@
 package app.whatsapp.profile.controllers;
 
-import app.whatsapp.commonweb.annotations.logging.Loggable;
+import app.whatsapp.commonweb.annotations.log.Log;
 import app.whatsapp.profile.entities.User;
 import app.whatsapp.commonweb.models.profile.response.CreateTokenResponse;
 import app.whatsapp.commonweb.models.profile.request.ValidateTokenRequest;
@@ -20,14 +20,14 @@ public class TokenController {
     @Autowired
     private ValidateTokenProcessor validateTokenProcessor;
 
-    @Loggable
+    @Log
     @PostMapping("/create")
     public CreateTokenResponse createToken(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         return createTokenProcessor.process(user);
     }
 
-    @Loggable
+    @Log
     @PostMapping("/validate")
     public ValidateTokenResponse validateToken(@RequestBody ValidateTokenRequest request) {
         return validateTokenProcessor.process(request);

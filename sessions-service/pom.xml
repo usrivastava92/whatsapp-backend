@@ -4,18 +4,16 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<artifactId>whatsapp-parent</artifactId>
+		<artifactId>whatsapp</artifactId>
 		<groupId>app.whatsapp</groupId>
 		<version>1.0-SNAPSHOT</version>
-		<relativePath>../whatsapp-parent</relativePath>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 
 	<groupId>app.whatsapp</groupId>
 	<artifactId>sessions-service</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>sessions-service</name>
-	<description>sessions-service for whatsapp project</description>
+	<version>${parent.version}</version>
 
 	<properties>
 		<java.version>11</java.version>
@@ -25,12 +23,12 @@
 		<dependency>
 			<groupId>app.whatsapp</groupId>
 			<artifactId>common</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>${parent.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>app.whatsapp</groupId>
 			<artifactId>common-web</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>${parent.version}</version>
 		</dependency>
 	</dependencies>
 

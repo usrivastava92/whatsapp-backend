@@ -1,10 +1,10 @@
 package app.whatsapp.profile.processors;
 
-import app.whatsapp.profile.entities.User;
 import app.whatsapp.commonweb.models.profile.response.CreateTokenResponse;
 import app.whatsapp.common.enums.ECommonResponseCodes;
 import app.whatsapp.common.processors.IRequestProcessor;
 import app.whatsapp.commonweb.services.CacheService;
+import app.whatsapp.profile.entities.User;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Component;
 

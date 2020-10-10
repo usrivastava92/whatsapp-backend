@@ -1,7 +1,6 @@
 package app.whatsapp.profile.controllers;
 
-import app.whatsapp.commonweb.annotations.logging.Log;
-import app.whatsapp.commonweb.annotations.logging.Loggable;
+import app.whatsapp.commonweb.annotations.log.Log;
 import app.whatsapp.commonweb.models.profile.request.LoginRequest;
 import app.whatsapp.commonweb.models.profile.response.LoginResponse;
 import app.whatsapp.commonweb.models.profile.request.AddUserRequest;
@@ -27,14 +26,14 @@ public class AuthController {
     @Autowired
     private UserRegistrationProcessor userRegistrationProcessor;
 
-    @Loggable
+    @Log
     @PostMapping("/login")
     public LoginResponse login(@RequestBody LoginRequest request) {
         LoginResponse responsePayload = loginProcessor.process(request);
         return responsePayload;
     }
 
-    @Loggable
+    @Log
     @PostMapping("/register")
     public AddUserResponse register(@RequestBody AddUserRequest request) {
         AddUserResponse responsePayload = userRegistrationProcessor.process(request);
