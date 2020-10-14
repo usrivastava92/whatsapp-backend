@@ -9,20 +9,31 @@ import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.Verification;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpHeaders;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 
-public class JwtUtil {
+public class JwtUtils {
 
-    private static final String AUTHORIZATION = "Authorization";
     private static final String BEARER = "Bearer";
     private static final String RANDOM_CYPHER = "randomKey";
 
     private static DecodedJWT decodeJwt(String jwt) throws JWTDecodeException {
         return JWT.decode(jwt);
+    }
+
+    public static boolean isExpired(String jwt) {
+        if (StringUtils.isEmpty(jwt)) {
+            return true;
+        }
+        Optional<Date> expiresAt = getExpiresAt(jwt);
+        if (expiresAt.isPresent()) {
+            return System.currentTimeMillis() > expiresAt.get().getTime();
+        }
+        return false;
     }
 
     private static String getKey(String key) {
@@ -56,17 +67,21 @@ public class JwtUtil {
         return Optional.empty();
     }
 
-    public static Optional<String> getJwtFromHeader(HttpServletRequest httpServletRequest) {
-        if (httpServletRequest != null) {
-            return getJwtFromHeader(httpServletRequest.getHeader(AUTHORIZATION));
+    public static Optional<String> getJwtFromHeader(HttpServletRequest httpServletRequest, String headerKey) {
+        if (httpServletRequest != null && StringUtils.isNotBlank(headerKey)) {
+            return getJwtFromHeader(httpServletRequest.getHeader(headerKey));
         }
         return Optional.empty();
+    }
+
+    public static Optional<String> getJwtFromHeader(HttpServletRequest httpServletRequest) {
+        return getJwtFromHeader(httpServletRequest, HttpHeaders.AUTHORIZATION);
     }
 
     public static Optional<String> getJwtFromHeader(String authorizationHeader) {
         if (StringUtils.isNotBlank(authorizationHeader) && authorizationHeader.startsWith(BEARER)) {
             String jwt = authorizationHeader.replace(BEARER, CommonConstants.SpecialChars.BLANK).trim();
-            if(StringUtils.isNotBlank(jwt)){
+            if (StringUtils.isNotBlank(jwt)) {
                 return Optional.of(jwt);
             }
         }
@@ -90,9 +105,11 @@ public class JwtUtil {
     }
 
     public static Optional<String> getSubject(String jwt) {
-        try {
-            return Optional.of(decodeJwt(jwt).getSubject());
-        } catch (Exception e) {
+        if (StringUtils.isNotBlank(jwt)) {
+            try {
+                return Optional.of(decodeJwt(jwt).getSubject());
+            } catch (Exception e) {
+            }
         }
         return Optional.empty();
     }
@@ -183,14 +200,12 @@ public class JwtUtil {
 
         private Verification verification;
         private String jwt;
-        private Long expiresAt;
 
         private Verifier(String jwt, String key) {
             this.jwt = jwt;
             verification = JWT.require(Algorithm.HMAC256(key));
             withIssuer();
             withSubject();
-            withExpiresAt();
             withIssuedAt();
         }
 
@@ -198,14 +213,6 @@ public class JwtUtil {
             Optional<Date> issuedAt = getIssuedAt(jwt);
             if (issuedAt.isPresent()) {
                 verification.acceptIssuedAt(issuedAt.get().getTime());
-            }
-        }
-
-        private void withExpiresAt() {
-            Optional<Date> expiresAt = getExpiresAt(jwt);
-            if (expiresAt.isPresent()) {
-                verification.acceptExpiresAt(expiresAt.get().getTime());
-                this.expiresAt = expiresAt.get().getTime();
             }
         }
 
@@ -258,10 +265,10 @@ public class JwtUtil {
         }
 
         public boolean verify() {
+            if (isExpired(jwt)) {
+                return false;
+            }
             try {
-                if (expiresAt != null && System.currentTimeMillis() > expiresAt) {
-                    return false;
-                }
                 verification.build().verify(jwt);
                 return true;
             } catch (Exception e) {

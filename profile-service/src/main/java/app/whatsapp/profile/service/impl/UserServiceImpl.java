@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         } else {
             Optional<User> userFromDb = userRepository.findById(id);
             if (userFromDb.isPresent()) {
-                cacheService.set(ConstantsUtility.getUserCacheKey(user.getId()), userFromDb.get(), userCacheExpiry);
+                cacheService.set(ConstantsUtility.getUserCacheKey(id), userFromDb.get(), userCacheExpiry);
                 user = userFromDb.get();
             }
         }

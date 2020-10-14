@@ -14,9 +14,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @Aspect
 @Component
@@ -27,36 +30,23 @@ public class LoggingAspect {
     @Around(value = "@annotation(app.whatsapp.commonweb.annotations.log.Log)")
     public Object around(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         long startTime = System.currentTimeMillis();
-        MethodSignature methodSignature = (MethodSignature) proceedingJoinPoint.getSignature();
-        Method method = methodSignature.getMethod();
-
+        Method method = ((MethodSignature) proceedingJoinPoint.getSignature()).getMethod();
         boolean isControllerMethod = isControllerMethod(method);
-
         Log loggable = method.getAnnotation(Log.class);
-        Set<Log.Context> loggableContexts = Set.of(loggable.contexts());
 
         String fullMethodName = new StringBuilder(proceedingJoinPoint.getSignature().getDeclaringType().getCanonicalName())
                 .append(CommonConstants.SpecialChars.DOT)
                 .append(method.getName()).toString();
-        if (loggableContexts.contains(Log.Context.ARGS) || isControllerMethod) {
-            Parameter[] parameters = method.getParameters();
-            Map<String, String> loggableArgs = new HashMap<>();
-            Object[] methodArgs = proceedingJoinPoint.getArgs();
-            Map<Class, Object> argMap = new HashMap<>();
-            for (Object arg : methodArgs) {
-                argMap.put(arg.getClass(), arg);
-            }
-            for (Parameter parameter : parameters) {
-                String parameterName = parameter.getName();
-                Object value = argMap.get(parameter.getType());
-                if (isLoggable(parameter) && value != null) {
-                    loggableArgs.put(parameterName, value.toString());
-                }
-            }
+        if (loggable.args() || isControllerMethod) {
+            Map<Class, Object> argMap = Arrays.stream(proceedingJoinPoint.getArgs())
+                    .collect(Collectors.toMap(arg -> arg.getClass(), arg -> arg));
+            Map<String, String> loggableArgs = Arrays.stream(method.getParameters())
+                    .filter(i -> isLoggable(i) && argMap.get(i) != null)
+                    .collect(Collectors.toMap(i -> i.getName(), i -> i.toString()));
             LOGGER.info("Method args for \"{}\" are : {}", fullMethodName, loggableArgs);
         }
         Object returnValue = proceedingJoinPoint.proceed();
-        if (loggableContexts.contains(Log.Context.RETURN_VALUE) || (isControllerMethod && returnValue instanceof BaseResponse)) {
+        if (loggable.returnVal() || (isControllerMethod && returnValue instanceof BaseResponse)) {
             LOGGER.info("Return value for \"{}\" is : {} ", fullMethodName, returnValue);
         }
         LOGGER.info("Time taken for \"{}\" execution is : {} milliseconds", fullMethodName, System.currentTimeMillis() - startTime);

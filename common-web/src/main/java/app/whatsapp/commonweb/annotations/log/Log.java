@@ -9,8 +9,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.PARAMETER})
 public @interface Log {
 
-    enum Context {ARGS, RETURN_VALUE}
-
-    Context[] contexts() default {};
+    boolean args() default false;
+    boolean returnVal() default false;
 
 }

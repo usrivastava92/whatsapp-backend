@@ -29,8 +29,8 @@ public class AuthController {
     @Log
     @PostMapping("/login")
     public LoginResponse login(@RequestBody LoginRequest request) {
-        LoginResponse responsePayload = loginProcessor.process(request);
-        return responsePayload;
+        LoginResponse loginResponse = loginProcessor.process(request);
+        return loginResponse;
     }
 
     @Log

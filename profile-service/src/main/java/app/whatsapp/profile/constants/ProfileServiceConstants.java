@@ -9,6 +9,10 @@ public class ProfileServiceConstants {
         public static final String USER_NOT_FOUND = "user not found";
     }
 
+    public static final class HttpConstants {
+        public static final String COOKIE_KEY = "profile-jwt";
+    }
+
     public static final class CacheConstants{
         public static final String ID_USER_CACHE_KEY = "ID_USER";
         public static final String ACCESS_TOKEN_USER_CACHE_KEY = "ACCESS_TOKEN_USER";

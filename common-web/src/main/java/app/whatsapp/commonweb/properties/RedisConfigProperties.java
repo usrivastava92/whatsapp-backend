@@ -14,7 +14,6 @@ public class RedisConfigProperties {
     private String hostname;
     private int port;
     private Integer db;
-    private String username;
     private String password;
     private Long defaultTtl;
 

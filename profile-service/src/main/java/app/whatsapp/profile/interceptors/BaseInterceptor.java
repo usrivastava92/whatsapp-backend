@@ -2,7 +2,7 @@ package app.whatsapp.profile.interceptors;
 
 import app.whatsapp.profile.constants.ProfileServiceConstants;
 import app.whatsapp.commonweb.utils.HttpUtils;
-import app.whatsapp.commonweb.utils.JwtUtil;
+import app.whatsapp.commonweb.utils.JwtUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
@@ -41,8 +41,8 @@ public class BaseInterceptor implements HandlerInterceptor {
         if (StringUtils.isNotBlank(requestId)) {
             MDC.put(ProfileServiceConstants.Extra.REQUEST_ID, requestId);
         }
-        JwtUtil.getJwtFromHeader(request).ifPresent(jwt -> {
-            JwtUtil.getSubject(jwt).ifPresent(username -> {
+        JwtUtils.getJwtFromHeader(request).ifPresent(jwt -> {
+            JwtUtils.getSubject(jwt).ifPresent(username -> {
                 MDC.put(ProfileServiceConstants.Extra.USERNAME, username);
             });
         });
