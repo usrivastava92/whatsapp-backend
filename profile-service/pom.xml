@@ -20,6 +20,12 @@
     <profiles>
         <profile>
             <id>dev</id>
+            <activation>
+                <property>
+                    <name>environment</name>
+                    <value>dev</value>
+                </property>
+            </activation>
             <dependencies>
                 <dependency>
                     <groupId>mysql</groupId>
@@ -27,15 +33,15 @@
                     <scope>runtime</scope>
                 </dependency>
             </dependencies>
-            <properties>
-                <spring.profile.active>dev</spring.profile.active>
-            </properties>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
         </profile>
         <profile>
             <id>prod</id>
+            <activation>
+                <property>
+                    <name>environment</name>
+                    <value>prod</value>
+                </property>
+            </activation>
             <dependencies>
                 <dependency>
                     <groupId>org.postgresql</groupId>
@@ -43,12 +49,6 @@
                     <scope>runtime</scope>
                 </dependency>
             </dependencies>
-            <properties>
-                <spring.profile.active>prod</spring.profile.active>
-            </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
         </profile>
     </profiles>
 
