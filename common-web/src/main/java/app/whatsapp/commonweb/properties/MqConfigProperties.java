@@ -11,15 +11,12 @@ import org.springframework.stereotype.Component;
 @ConditionalOnProperty(value = "application.mq.enable", havingValue = "true")
 public class MqConfigProperties {
 
+    private boolean enable;
     private String hostname;
-    private int port;
+    private Integer port;
     private String username;
     private String password;
-    private String routingKey;
-    private String queueName;
-    private String topicExchangeName;
-    private String fanoutExchangeName;
-    private String directExchangeName;
-    private String headersExchangeName;
-
+    private int connectionLimit;
+    private String vHost;
+    private String uri;
 }

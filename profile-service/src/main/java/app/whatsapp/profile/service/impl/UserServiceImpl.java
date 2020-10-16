@@ -39,10 +39,9 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         if (userFromDb.isPresent()) {
             user = userFromDb.get();
             cacheService.set(ConstantsUtility.getUserCacheKey(user.getId()), user, userCacheExpiry);
-        } else {
-            throw new UsernameNotFoundException(Extra.USER_NOT_FOUND);
+            return user;
         }
-        return user;
+        throw new UsernameNotFoundException(Extra.USER_NOT_FOUND);
     }
 
     @Override

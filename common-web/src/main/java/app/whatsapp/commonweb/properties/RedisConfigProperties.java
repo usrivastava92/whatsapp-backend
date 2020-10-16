@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 @ConditionalOnProperty(value = "application.redis.enable", havingValue = "true")
 public class RedisConfigProperties {
 
+    private boolean enable;
     private String hostname;
     private int port;
     private Integer db;

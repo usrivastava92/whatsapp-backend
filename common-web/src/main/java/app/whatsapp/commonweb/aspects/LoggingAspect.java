@@ -41,7 +41,7 @@ public class LoggingAspect {
             Map<Class, Object> argMap = Arrays.stream(proceedingJoinPoint.getArgs())
                     .collect(Collectors.toMap(arg -> arg.getClass(), arg -> arg));
             Map<String, String> loggableArgs = Arrays.stream(method.getParameters())
-                    .filter(i -> isLoggable(i) && argMap.get(i) != null)
+                    .filter(i -> isLoggable(i) && argMap.get(i.getType()) != null)
                     .collect(Collectors.toMap(i -> i.getName(), i -> i.toString()));
             LOGGER.info("Method args for \"{}\" are : {}", fullMethodName, loggableArgs);
         }

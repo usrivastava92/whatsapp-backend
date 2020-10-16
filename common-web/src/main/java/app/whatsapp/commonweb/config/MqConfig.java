@@ -1,11 +1,15 @@
 package app.whatsapp.commonweb.config;
 
 import app.whatsapp.commonweb.properties.MqConfigProperties;
+import com.rabbitmq.client.ShutdownSignalException;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
+import org.springframework.amqp.rabbit.connection.Connection;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.connection.ConnectionListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
@@ -20,16 +24,33 @@ public class MqConfig {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MqConfig.class);
 
-    @Autowired
     private MqConfigProperties mqConfigProperties;
 
+    public MqConfig(MqConfigProperties mqConfigProperties) {
+        this.mqConfigProperties = mqConfigProperties;
+    }
 
     @Bean
     public ConnectionFactory connectionFactory() {
-        LOGGER.info("Initializing MqConnectionFactory");
-        CachingConnectionFactory cachingConnectionFactory = new CachingConnectionFactory(mqConfigProperties.getHostname(), mqConfigProperties.getPort());
-        cachingConnectionFactory.setUsername(mqConfigProperties.getUsername());
-        cachingConnectionFactory.setUsername(mqConfigProperties.getPassword());
+        LOGGER.info("Initializing MqConnectionFactory : {}", mqConfigProperties);
+        CachingConnectionFactory cachingConnectionFactory = null;
+        if (StringUtils.isBlank(mqConfigProperties.getHostname())) {
+            cachingConnectionFactory = new CachingConnectionFactory();
+        } else if (mqConfigProperties.getPort() == null) {
+            cachingConnectionFactory = new CachingConnectionFactory(mqConfigProperties.getHostname());
+        } else {
+            cachingConnectionFactory = new CachingConnectionFactory(mqConfigProperties.getHostname(), mqConfigProperties.getPort());
+        }
+        if (StringUtils.isNotBlank(mqConfigProperties.getUri())) {
+            cachingConnectionFactory.setUri(mqConfigProperties.getUri());
+        } else {
+            cachingConnectionFactory.setVirtualHost(mqConfigProperties.getVHost());
+            cachingConnectionFactory.setUsername(mqConfigProperties.getUsername());
+            cachingConnectionFactory.setUsername(mqConfigProperties.getPassword());
+        }
+        if (mqConfigProperties.getConnectionLimit() > 0) {
+            cachingConnectionFactory.setConnectionLimit(mqConfigProperties.getConnectionLimit());
+        }
         return cachingConnectionFactory;
     }
 
