@@ -99,8 +99,7 @@
                             <overWriteReleases>false</overWriteReleases>
                             <overWriteSnapshots>false</overWriteSnapshots>
                             <overWriteIfNewer>true</overWriteIfNewer>
-                            <outputDirectory>${project.basedir}</outputDirectory>
-                            <destFileName>newrelic</destFileName>
+                            <outputDirectory>${project.basedir}/..</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
