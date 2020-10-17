@@ -25,7 +25,7 @@ public class AddSessionProcessor implements IRequestProcessor<AddSessionRequest,
 
     @Override
     public AddSessionResponse onProcess(AddSessionRequest request, AddSessionRequest serviceRequest) {
-        cacheService.hSet(SessionServiceConstants.USER_HOST_MAPPING_KEY, request.getUserId(), request.getHost());
+        cacheService.hSet(SessionServiceConstants.USER_GATEWAY_MAPPING_KEY, request.getUserId(), request.getRoutingKey());
         return new AddSessionResponse();
     }
 

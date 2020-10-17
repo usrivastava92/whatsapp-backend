@@ -15,6 +15,33 @@
 	<artifactId>sessions-service</artifactId>
 	<version>${parent.version}</version>
 
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<properties>
+				<spring.profiles.active>dev</spring.profiles.active>
+			</properties>
+			<activation>
+				<property>
+					<name>environment</name>
+					<value>dev</value>
+				</property>
+			</activation>
+		</profile>
+		<profile>
+			<id>prod</id>
+			<properties>
+				<spring.profiles.active>prod</spring.profiles.active>
+			</properties>
+			<activation>
+				<property>
+					<name>environment</name>
+					<value>prod</value>
+				</property>
+			</activation>
+		</profile>
+	</profiles>
+
 	<properties>
 		<java.version>11</java.version>
 	</properties>

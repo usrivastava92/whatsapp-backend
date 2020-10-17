@@ -1,14 +1,15 @@
 package app.whatsapp.gateway.config;
 
+import app.whatsapp.common.constants.CommonConstants;
+import app.whatsapp.gateway.constants.GatewayServiceConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.*;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
@@ -19,34 +20,49 @@ public class GatewayMqConfig {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GatewayMqConfig.class);
 
+    @Value("${application.server.id}")
+    private long serverId;
+
     @Bean
-    Queue queue() {
-        return new Queue("whatsapp-gateway-queue", false);
+    public Queue incomingMessageQueue() {
+        LOGGER.info("Initialized queue : {}", GatewayServiceConstants.MqConstants.INCOMING_MESSAGES_QUEUE);
+        return new Queue(GatewayServiceConstants.MqConstants.INCOMING_MESSAGES_QUEUE, false);
     }
 
     @Bean
-    TopicExchange exchange() {
-        return new TopicExchange("whatsapp-gateway-topic");
+    public Queue outgoingMessageQueue() {
+        String queueName = GatewayServiceConstants.MqConstants.OUTGOING_MESSAGES_QUEUE.concat(CommonConstants.SpecialChars.UNDERSCORE + serverId);
+        LOGGER.info("Initialized queue : {}", queueName);
+        return new Queue(queueName, false);
     }
 
     @Bean
-    Binding binding(Queue queue, TopicExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with("foo.bar.#");
+    public DirectExchange incomingQueueExchange() {
+        return new DirectExchange(GatewayServiceConstants.MqConstants.INCOMING_QUEUE_EXCHANGE);
     }
 
     @Bean
-    SimpleMessageListenerContainer container(ConnectionFactory connectionFactory,
-                                             MessageListenerAdapter listenerAdapter) {
+    public DirectExchange outgoingQueueExchange() {
+        return new DirectExchange(GatewayServiceConstants.MqConstants.OUTGOING_QUEUE_EXCHANGE);
+    }
+
+    @Bean
+    public Binding incomingQueueBinding(@Qualifier("incomingMessageQueue") Queue queue, @Qualifier("incomingQueueExchange") DirectExchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with(queue.getName());
+    }
+
+    @Bean
+    public Binding outgoingQueueBinding(@Qualifier("outgoingMessageQueue") Queue queue, @Qualifier("outgoingQueueExchange") DirectExchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with(queue.getName());
+    }
+
+    @Bean
+    public SimpleMessageListenerContainer container(ConnectionFactory connectionFactory, MessageListenerAdapter messageListenerAdapter) {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
-        container.setQueueNames("whatsapp-gateway-queue");
-        container.setMessageListener(listenerAdapter);
+        container.setQueues(outgoingMessageQueue());
+        container.setMessageListener(messageListenerAdapter);
         return container;
-    }
-
-    @Bean
-    MessageListenerAdapter listenerAdapter() {
-        return new MessageListenerAdapter();
     }
 
 }

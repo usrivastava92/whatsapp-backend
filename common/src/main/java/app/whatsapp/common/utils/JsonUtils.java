@@ -11,4 +11,8 @@ public class JsonUtils {
         return OBJECT_MAPPER.readValue(json, tClass);
     }
 
+    public static String toJson(Object object) throws JsonProcessingException {
+        return OBJECT_MAPPER.writeValueAsString(object);
+    }
+
 }

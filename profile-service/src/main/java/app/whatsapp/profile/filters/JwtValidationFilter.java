@@ -60,7 +60,8 @@ public class JwtValidationFilter extends OncePerRequestFilter {
             if (optionalCookie.isPresent()) {
                 jwt = optionalCookie.get().getValue();
             }
-        } else {
+        }
+        if (StringUtils.isBlank(jwt)) {
             Optional<String> optionalJwt = JwtUtils.getJwtFromHeader(httpServletRequest);
             if (optionalJwt.isPresent()) {
                 jwt = optionalJwt.get();

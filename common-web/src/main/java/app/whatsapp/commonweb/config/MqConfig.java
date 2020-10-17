@@ -1,5 +1,6 @@
 package app.whatsapp.commonweb.config;
 
+import app.whatsapp.commonweb.hooks.MqMessageReceiver;
 import app.whatsapp.commonweb.properties.MqConfigProperties;
 import com.rabbitmq.client.ShutdownSignalException;
 import org.apache.commons.lang3.StringUtils;
@@ -11,6 +12,7 @@ import org.springframework.amqp.rabbit.connection.Connection;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +46,9 @@ public class MqConfig {
         if (StringUtils.isNotBlank(mqConfigProperties.getUri())) {
             cachingConnectionFactory.setUri(mqConfigProperties.getUri());
         } else {
-            cachingConnectionFactory.setVirtualHost(mqConfigProperties.getVHost());
+            if (StringUtils.isNoneBlank(mqConfigProperties.getVHost())) {
+                cachingConnectionFactory.setVirtualHost(mqConfigProperties.getVHost());
+            }
             cachingConnectionFactory.setUsername(mqConfigProperties.getUsername());
             cachingConnectionFactory.setUsername(mqConfigProperties.getPassword());
         }
@@ -64,6 +68,11 @@ public class MqConfig {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory());
         rabbitTemplate.setMessageConverter(messageConverter());
         return rabbitTemplate;
+    }
+
+    @Bean
+    public MessageListenerAdapter listenerAdapter(MqMessageReceiver receiver) {
+        return new MessageListenerAdapter(receiver, "handleMessage");
     }
 
 }
