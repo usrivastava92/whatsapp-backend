@@ -4,6 +4,7 @@ import app.whatsapp.commonweb.models.profile.UserProfile;
 import app.whatsapp.commonweb.utils.HttpUtils;
 import app.whatsapp.commonweb.models.profile.request.ValidateTokenRequest;
 import app.whatsapp.commonweb.models.profile.response.ValidateTokenResponse;
+import app.whatsapp.gateway.constants.GatewayServiceConstants;
 import app.whatsapp.gateway.utils.MdcUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -24,8 +25,6 @@ import java.util.Map;
 public class WebSocketHandshakeInterceptor implements HandshakeInterceptor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebSocketHandshakeInterceptor.class);
-    private static final String TOKEN_KEY = "token";
-    private static final String PRINCIPAL = "principal";
 
     @Value("${application.profile.token.validate.url}")
     private String profileServiceValidateTokenUrl;
@@ -39,14 +38,14 @@ public class WebSocketHandshakeInterceptor implements HandshakeInterceptor {
     @Override
     public boolean beforeHandshake(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse, WebSocketHandler webSocketHandler, Map<String, Object> map) throws Exception {
         Map<String, String> queryParams = HttpUtils.getQueryParam(serverHttpRequest.getURI().getQuery());
-        String token = queryParams.get(TOKEN_KEY);
+        String token = queryParams.get(GatewayServiceConstants.Extra.TOKEN);
         if (StringUtils.isNotBlank(token)) {
             ValidateTokenRequest validateTokenRequest = new ValidateTokenRequest();
             validateTokenRequest.setAccessToken(token);
             ResponseEntity<ValidateTokenResponse> responseEntity = restTemplate.postForEntity(profileServiceValidateTokenUrl, validateTokenRequest, ValidateTokenResponse.class);
             if (responseEntity.getBody() != null && responseEntity.getBody().isValid()) {
                 UserProfile userProfile = responseEntity.getBody().getUserProfile();
-                map.put(PRINCIPAL, userProfile);
+                map.put(GatewayServiceConstants.Extra.PRINCIPAL, userProfile);
                 MdcUtils.setUserDetailsInMdc(userProfile);
                 return true;
             }

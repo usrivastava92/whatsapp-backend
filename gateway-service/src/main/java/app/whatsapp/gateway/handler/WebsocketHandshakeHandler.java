@@ -1,6 +1,7 @@
 package app.whatsapp.gateway.handler;
 
 import app.whatsapp.commonweb.models.profile.UserProfile;
+import app.whatsapp.gateway.constants.GatewayServiceConstants;
 import app.whatsapp.gateway.models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +20,6 @@ public class WebsocketHandshakeHandler extends DefaultHandshakeHandler {
 
     @Override
     protected Principal determineUser(ServerHttpRequest request, WebSocketHandler wsHandler, Map<String, Object> attributes) {
-        return new User((UserProfile) attributes.get("principal"));
+        return new User((UserProfile) attributes.get(GatewayServiceConstants.Extra.PRINCIPAL));
     }
 }

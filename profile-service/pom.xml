@@ -24,7 +24,6 @@
                 <spring.profiles.active>dev</spring.profiles.active>
             </properties>
             <activation>
-                <activeByDefault>true</activeByDefault>
                 <property>
                     <name>environment</name>
                     <value>dev</value>

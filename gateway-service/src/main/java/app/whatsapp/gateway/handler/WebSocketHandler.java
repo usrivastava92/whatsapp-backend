@@ -49,13 +49,13 @@ public class WebSocketHandler extends TextWebSocketHandler {
     }
 
     @Override
-    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+    protected void handleTextMessage(WebSocketSession session, TextMessage message) {
         MdcUtils.setUserDetailsInMdc((UserProfile) session.getPrincipal());
         LOGGER.info("Payload : " + message.getPayload());
     }
 
     @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
         MdcUtils.setUserDetailsInMdc((UserProfile) session.getPrincipal());
         LOGGER.info("DISCONNECTED!");
     }
