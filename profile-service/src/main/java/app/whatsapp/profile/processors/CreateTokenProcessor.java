@@ -16,7 +16,7 @@ public class CreateTokenProcessor implements IRequestProcessor<User, User, Strin
 
     private CacheService cacheService;
 
-    @Value("${application.access-token.expiry.ms:5000}")
+    @Value("${application.access-token.expiry.sec:5}")
     private long accessTokenExpiry;
 
     public CreateTokenProcessor(CacheService cacheService) {
