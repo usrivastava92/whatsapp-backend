@@ -41,7 +41,7 @@
             <activation>
                 <property>
                     <name>environment</name>
-                    <value>asas</value>
+                    <value>prod</value>
                 </property>
             </activation>
             <dependencies>
@@ -105,7 +105,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-amqp</artifactId>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/io.lettuce/lettuce-core -->
         <dependency>
             <groupId>io.lettuce</groupId>
             <artifactId>lettuce-core</artifactId>
