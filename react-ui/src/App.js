@@ -18,7 +18,7 @@ class App extends Component {
         messageList: []
     }
 
-    URLS = DEV_URLS;
+    URLS = PROD_URLS;
 
     loginClickHandler = () => {
         const uri = this.URLS.LOGIN_URL;
