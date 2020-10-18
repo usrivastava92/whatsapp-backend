@@ -1,5 +1,6 @@
 package app.whatsapp.gateway.interceptor;
 
+import app.whatsapp.common.constants.CommonConstants;
 import app.whatsapp.commonweb.models.profile.UserProfile;
 import app.whatsapp.commonweb.utils.HttpUtils;
 import app.whatsapp.commonweb.models.profile.request.ValidateTokenRequest;
@@ -11,14 +12,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
+import org.springframework.http.server.ServletServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 @Component
@@ -57,5 +61,9 @@ public class WebSocketHandshakeInterceptor implements HandshakeInterceptor {
 
     @Override
     public void afterHandshake(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse, WebSocketHandler webSocketHandler, Exception e) {
+        HttpServletResponse response = ((ServletServerHttpResponse) serverHttpResponse).getServletResponse();
+        response.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, CommonConstants.SpecialChars.ASTERISK);
+        response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, CommonConstants.SpecialChars.ASTERISK);
+        response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, CommonConstants.SpecialChars.ASTERISK);
     }
 }
