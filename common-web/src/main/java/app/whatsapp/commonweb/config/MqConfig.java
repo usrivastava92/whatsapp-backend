@@ -34,7 +34,7 @@ public class MqConfig {
 
     @Bean
     public ConnectionFactory connectionFactory() {
-        LOGGER.info("Initializing MqConnectionFactory : {}", mqConfigProperties);
+        LOGGER.info("Initializing MqConnectionFactory");
         CachingConnectionFactory cachingConnectionFactory = null;
         if (StringUtils.isBlank(mqConfigProperties.getHostname())) {
             cachingConnectionFactory = new CachingConnectionFactory();

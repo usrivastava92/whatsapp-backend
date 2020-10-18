@@ -22,10 +22,6 @@ import java.util.*;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    public static final String HEAD = "head";
-    public static final String BODY = "body";
-
-
     @ExceptionHandler(value = {Exception.class})
     public ResponseEntity<BaseResponse> exception() {
         return getResponse(null, ECommonResponseCodes.SYSTEM_ERROR);
@@ -46,22 +42,17 @@ public class GlobalExceptionHandler {
         Set<String> errors = new HashSet<>();
         for (ConstraintViolation constraintViolation : ex.getConstraintViolations()) {
             StringBuilder sb = new StringBuilder();
-            boolean collect = false;
             Iterator<Path.Node> iterator = constraintViolation.getPropertyPath().iterator();
             while (iterator.hasNext()) {
                 Path.Node node = iterator.next();
-                if (collect) {
-                    sb.append(CommonConstants.SpecialChars.DOT).append(node.getName());
-                } else {
-                    String name = node.getName();
-                    if (name.equals(HEAD) || name.equals(BODY)) {
-                        collect = true;
-                        sb.append(name);
-                    }
+                if (!iterator.hasNext()) {
+                    sb.append(node)
+                    .append(CommonConstants.SpecialChars.WHITE_SPACE)
+                    .append(CommonConstants.SpecialChars.COLON)
+                    .append(CommonConstants.SpecialChars.WHITE_SPACE)
+                    .append(constraintViolation.getMessage());
                 }
             }
-            sb.append(CommonConstants.SpecialChars.WHITE_SPACE).append(CommonConstants.SpecialChars.COLON).append(CommonConstants.SpecialChars.WHITE_SPACE)
-                    .append(constraintViolation.getMessage());
             errors.add(sb.toString());
         }
         return getResponse(errors.toString(), ECommonResponseCodes.INVALID_REQUEST);
@@ -82,6 +73,6 @@ public class GlobalExceptionHandler {
         if (StringUtils.isNotBlank(message)) {
             baseResponseBody.getResponseStatus().setMessage(message);
         }
-        return new ResponseEntity<>(baseResponseBody, HttpStatus.BAD_REQUEST);
+        return ResponseEntity.ok(baseResponseBody);
     }
 }

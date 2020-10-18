@@ -9,7 +9,7 @@ import lombok.Getter;
 public enum ECommonResponseCodes implements IResponseCode {
 
     SYSTEM_ERROR("500", "F", "Some error occurred"),
-    INVALID_REQUEST("70", "F", "Invalid request"),
+    INVALID_REQUEST("400", "F", "Invalid request"),
     INVALID_PARAM("60", "F", "Invalid parameter"),
     SUCCESS("200", "S", "Success");
 

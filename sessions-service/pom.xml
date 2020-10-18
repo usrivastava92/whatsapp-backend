@@ -49,11 +49,6 @@
 	<dependencies>
 		<dependency>
 			<groupId>app.whatsapp</groupId>
-			<artifactId>common</artifactId>
-			<version>${project.parent.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>app.whatsapp</groupId>
 			<artifactId>common-web</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
