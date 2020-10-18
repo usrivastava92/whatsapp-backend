@@ -38,6 +38,7 @@ public class WebSocketHandshakeInterceptor implements HandshakeInterceptor {
     @Override
     public boolean beforeHandshake(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse, WebSocketHandler webSocketHandler, Map<String, Object> map) throws Exception {
         Map<String, String> queryParams = HttpUtils.getQueryParam(serverHttpRequest.getURI().getQuery());
+        LOGGER.info("authenticating websocket connection : {} ", queryParams);
         String token = queryParams.get(GatewayServiceConstants.Extra.TOKEN);
         if (StringUtils.isNotBlank(token)) {
             ValidateTokenRequest validateTokenRequest = new ValidateTokenRequest();
