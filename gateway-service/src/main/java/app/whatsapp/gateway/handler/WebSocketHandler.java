@@ -15,10 +15,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.Queue;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.socket.CloseStatus;
@@ -52,12 +50,12 @@ public class WebSocketHandler extends TextWebSocketHandler {
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         LOGGER.info("CONNECTED!");
         User user = (User) session.getPrincipal();
+        websocketSessionStore.addSession(user.getId(), session);
         AddSessionRequest addSessionRequest = new AddSessionRequest(user.getId(), binding.getRoutingKey());
-        ResponseEntity<AddSessionResponse> addSessionResponse = restTemplate.postForEntity(addSessionUrl, addSessionRequest, AddSessionResponse.class);
-        if (!addSessionResponse.getBody().getResponseStatus().getStatus().equals(ECommonResponseCodes.SUCCESS.getStatus())) {
+        AddSessionResponse addSessionResponse = restTemplate.postForObject(addSessionUrl, addSessionRequest, AddSessionResponse.class);
+        if (!addSessionResponse.getResponseStatus().getStatus().equals(ECommonResponseCodes.SUCCESS.getStatus())) {
             session.close();
         }
-        websocketSessionStore.addSession(user.getId(), session);
         MdcUtils.clear();
     }
 
@@ -67,7 +65,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
         MdcUtils.setUserDetailsInMdc(user);
         Message message = JsonUtils.map(textMessage.getPayload(), Message.class);
         message.setFromUserId(user.getId());
-        message.setTimestamp(System.currentTimeMillis());
         if (StringUtils.isBlank(message.getMessage()) || message.getToUserId() == null) {
             throw new Exception("to user can't be null");
         }
