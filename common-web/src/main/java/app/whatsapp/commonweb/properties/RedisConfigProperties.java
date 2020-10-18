@@ -17,6 +17,8 @@ public class RedisConfigProperties {
     private Integer db;
     private String password;
     private Long defaultTtl;
+    private Long connectTimeoutMs;
+    private Long commandTimeoutMs;
 
 
 }

@@ -6,6 +6,7 @@ import app.whatsapp.common.processors.IRequestProcessor;
 import app.whatsapp.commonweb.services.CacheService;
 import app.whatsapp.profile.entities.User;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import static app.whatsapp.profile.constants.ProfileServiceConstants.*;
@@ -14,6 +15,9 @@ import static app.whatsapp.profile.constants.ProfileServiceConstants.*;
 public class CreateTokenProcessor implements IRequestProcessor<User, User, String, CreateTokenResponse> {
 
     private CacheService cacheService;
+
+    @Value("${application.access-token.expiry.ms:5000}")
+    private long accessTokenExpiry;
 
     public CreateTokenProcessor(CacheService cacheService) {
         this.cacheService = cacheService;
@@ -25,13 +29,13 @@ public class CreateTokenProcessor implements IRequestProcessor<User, User, Strin
     }
 
     @Override
-    public String onProcess(User request, User serviceRequest) {
+    public String onProcess(User user, User serviceRequest) {
         String accessToken = new StringBuilder()
                 .append(RandomStringUtils.randomAlphanumeric(4))
                 .append(System.currentTimeMillis())
                 .append(RandomStringUtils.randomAlphanumeric(4))
                 .toString();
-        cacheService.hSet(CacheConstants.ACCESS_TOKEN_USER_CACHE_KEY, accessToken, request);
+        cacheService.set(accessToken, user, accessTokenExpiry);
         return accessToken;
     }
 
