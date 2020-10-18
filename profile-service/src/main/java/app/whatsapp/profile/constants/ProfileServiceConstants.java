@@ -14,8 +14,6 @@ public class ProfileServiceConstants {
     }
 
     public static final class CacheConstants{
-        public static final String ID_USER_CACHE_KEY = "ID_USER";
-        public static final String ACCESS_TOKEN_USER_CACHE_KEY = "ACCESS_TOKEN_USER";
     }
 
 }

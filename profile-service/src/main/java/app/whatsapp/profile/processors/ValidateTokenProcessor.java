@@ -32,8 +32,8 @@ public class ValidateTokenProcessor implements IRequestProcessor<ValidateTokenRe
     @Override
     public Optional<User> onProcess(ValidateTokenRequest request, ValidateTokenRequest serviceRequest) {
         String accessToken = request.getAccessToken();
-        Optional<User> user = cacheService.hGet(CacheConstants.ACCESS_TOKEN_USER_CACHE_KEY, accessToken, User.class);
-        cacheService.hDel(CacheConstants.ACCESS_TOKEN_USER_CACHE_KEY, accessToken);
+        Optional<User> user = cacheService.get(accessToken, User.class);
+        cacheService.del(accessToken);
         return user;
     }
 
