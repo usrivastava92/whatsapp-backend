@@ -12,7 +12,7 @@
 
     <groupId>app.whatsapp</groupId>
     <artifactId>common</artifactId>
-    <version>${parent.version}</version>
+    <version>${project.parent.version}</version>
     <packaging>jar</packaging>
 
     <properties>

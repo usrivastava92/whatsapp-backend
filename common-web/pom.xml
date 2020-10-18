@@ -12,7 +12,7 @@
 
     <groupId>app.whatsapp</groupId>
     <artifactId>common-web</artifactId>
-    <version>${parent.version}</version>
+    <version>${project.parent.version}</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -41,7 +41,7 @@
             <activation>
                 <property>
                     <name>environment</name>
-                    <value>prod</value>
+                    <value>asas</value>
                 </property>
             </activation>
             <dependencies>
@@ -99,7 +99,7 @@
         <dependency>
             <groupId>app.whatsapp</groupId>
             <artifactId>common</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
