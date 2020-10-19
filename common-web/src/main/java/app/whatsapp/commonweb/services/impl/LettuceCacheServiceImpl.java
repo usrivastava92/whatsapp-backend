@@ -23,7 +23,9 @@ public class LettuceCacheServiceImpl implements CacheService {
 
     public LettuceCacheServiceImpl(RedisTemplate<String, Serializable> redisTemplate, RedisConfigProperties redisConfigProperties) {
         this.template = redisTemplate;
-        this.defaultTtl = Duration.ofSeconds(redisConfigProperties.getDefaultTtlSeconds());
+        if (redisConfigProperties.getDefaultTtlSeconds() != null) {
+            this.defaultTtl = Duration.ofSeconds(redisConfigProperties.getDefaultTtlSeconds());
+        }
     }
 
     @Override
@@ -42,9 +44,7 @@ public class LettuceCacheServiceImpl implements CacheService {
 
     @Override
     public void set(String key, Serializable value, Duration ttl) {
-        if (ttl != null && !ttl.isNegative()) {
-            template.opsForValue().set(key, value, toSeconds(ttl), DEFAULT_TTL_UNIT);
-        }
+        template.opsForValue().set(key, value, toSeconds(ttl), DEFAULT_TTL_UNIT);
     }
 
     @Override
