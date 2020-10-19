@@ -19,6 +19,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
+
 
 @Component
 public class LoginProcessor implements IRequestProcessor<LoginRequest, LoginRequest, LoginResponse, LoginResponse> {
@@ -46,7 +48,7 @@ public class LoginProcessor implements IRequestProcessor<LoginRequest, LoginRequ
             User user = (User) authentication.getPrincipal();
             String jwt = JwtUtils.Builder.getInstance().withSubject(username)
                     .withClaim(ProfileServiceConstants.Extra.ID, user.getId())
-                    .signWith(password).withValidityInSeconds(this.jwtExpiry).build();
+                    .signWith(password).withValidity(Duration.ofSeconds(this.jwtExpiry)).build();
             loginResponse = new LoginResponse(ECommonResponseCodes.SUCCESS, jwt, new ProfileResponse(user));
         } catch (BadCredentialsException e) {
             loginResponse = new LoginResponse(EProfileServiceResponseCodes.INVALID_CREDENTIALS);

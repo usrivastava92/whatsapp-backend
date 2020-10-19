@@ -3,11 +3,13 @@ package app.whatsapp.commonweb.services.impl;
 import app.whatsapp.common.constants.CommonConstants;
 import app.whatsapp.commonweb.properties.RedisConfigProperties;
 import app.whatsapp.commonweb.services.CacheService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
+import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -17,13 +19,12 @@ public class LettuceCacheServiceImpl implements CacheService {
 
     private RedisTemplate<String, Serializable> template;
     private static final TimeUnit DEFAULT_TTL_UNIT = TimeUnit.SECONDS;
-    private Long defaultTtl;
+    private Duration defaultTtl;
 
     public LettuceCacheServiceImpl(RedisTemplate<String, Serializable> redisTemplate, RedisConfigProperties redisConfigProperties) {
         this.template = redisTemplate;
-        this.defaultTtl = redisConfigProperties.getDefaultTtl();
+        this.defaultTtl = Duration.ofSeconds(redisConfigProperties.getDefaultTtlSeconds());
     }
-
 
     @Override
     public Set<String> getAllKeys() {
@@ -35,13 +36,15 @@ public class LettuceCacheServiceImpl implements CacheService {
         if (defaultTtl != null) {
             this.set(key, value, defaultTtl);
         } else {
-            template.opsForValue().set(key, value, defaultTtl, DEFAULT_TTL_UNIT);
+            template.opsForValue().set(key, value, toSeconds(defaultTtl), DEFAULT_TTL_UNIT);
         }
     }
 
     @Override
-    public void set(String key, Serializable value, long ttlSeconds) {
-        template.opsForValue().set(key, value, ttlSeconds, DEFAULT_TTL_UNIT);
+    public void set(String key, Serializable value, Duration ttl) {
+        if (ttl != null && !ttl.isNegative()) {
+            template.opsForValue().set(key, value, toSeconds(ttl), DEFAULT_TTL_UNIT);
+        }
     }
 
     @Override
@@ -60,7 +63,7 @@ public class LettuceCacheServiceImpl implements CacheService {
     }
 
     @Override
-    public void hSet(String key, Serializable field, Serializable value, long ttl) {
+    public void hSet(String key, Serializable field, Serializable value, Duration ttl) {
         template.opsForHash().put(key, field, value);
         this.expire(key, ttl);
     }
@@ -72,12 +75,16 @@ public class LettuceCacheServiceImpl implements CacheService {
 
     @Override
     public boolean exists(String key) {
-        return 1 == template.countExistingKeys(Arrays.asList(key));
+        if (StringUtils.isBlank(key)) {
+            return false;
+        }
+        Long count = template.countExistingKeys(Collections.singletonList(key));
+        return count != null && count.equals(1L);
     }
 
     @Override
-    public void expire(String key, long ttlSeconds) {
-        template.expire(key, ttlSeconds, DEFAULT_TTL_UNIT);
+    public void expire(String key, Duration ttl) {
+        template.expire(key, toSeconds(ttl), DEFAULT_TTL_UNIT);
     }
 
     @Override
@@ -91,9 +98,9 @@ public class LettuceCacheServiceImpl implements CacheService {
     }
 
     @Override
-    public <T extends Serializable> Optional<T> getSet(String key, Serializable value, Class<T> tClass, long ttlSeconds) {
+    public <T extends Serializable> Optional<T> getSet(String key, Serializable value, Class<T> tClass, Duration ttl) {
         Optional<T> oldValue = Optional.ofNullable((T) template.opsForValue().getAndSet(key, value));
-        this.expire(key, ttlSeconds);
+        this.expire(key, ttl);
         return oldValue;
     }
 
@@ -135,5 +142,9 @@ public class LettuceCacheServiceImpl implements CacheService {
     @Override
     public <T extends Serializable> Optional<T> hGet(String key, Serializable field, Class<T> tClass) {
         return Optional.ofNullable((T) template.opsForHash().get(key, field));
+    }
+
+    private final long toSeconds(Duration duration) {
+        return duration.toMillis() / 1000;
     }
 }

@@ -1,6 +1,7 @@
 package app.whatsapp.commonweb.services;
 
 import java.io.Serializable;
+import java.time.Duration;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -11,7 +12,7 @@ public interface CacheService {
 
     void set(String key, Serializable value);
 
-    void set(String key, Serializable value, long ttlSeconds);
+    void set(String key, Serializable value, Duration ttl);
 
     <T extends Serializable> Optional<T> get(String key, Class<T> tClass);
 
@@ -21,13 +22,13 @@ public interface CacheService {
 
     boolean exists(String key);
 
-    void expire(String key, long ttlSeconds);
+    void expire(String key, Duration ttl);
 
     void expireAt(String key, long unixMillis);
 
     <T extends Serializable> Optional<T> getSet(String key, Serializable value, Class<T> tClass);
 
-    <T extends Serializable> Optional<T> getSet(String key, Serializable value, Class<T> tClass, long ttlSeconds);
+    <T extends Serializable> Optional<T> getSet(String key, Serializable value, Class<T> tClass, Duration ttl);
 
     Set<Serializable> hKeys(String key);
 
@@ -39,7 +40,7 @@ public interface CacheService {
 
     void hSet(String key, Serializable field, Serializable value);
 
-    void hSet(String key, Serializable field, Serializable value, long ttl);
+    void hSet(String key, Serializable field, Serializable value, Duration ttl);
 
     void hSetNx(String key, Serializable field, Serializable value);
 

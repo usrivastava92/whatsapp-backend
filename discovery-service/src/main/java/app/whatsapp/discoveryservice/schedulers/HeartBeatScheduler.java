@@ -47,7 +47,7 @@ public class HeartBeatScheduler {
             registeredApplication.getInstances().forEach((instance) -> {
                 try {
                     ResponseEntity<String> responseEntity = restTemplate.getForEntity(instance.getStatusPageUrl(), String.class);
-                    LOGGER.info("Checking heartbeat for : {}, URI : {}, HttpStatusCode : {}", instance.getAppName(), instance.getStatusPageUrl(), responseEntity.getStatusCode());
+                    LOGGER.info("Checking heartbeat for : {} : {} : {}", instance.getAppName(), instance.getStatusPageUrl(), responseEntity.getStatusCode());
                 } catch (Exception e) {
                     LOGGER.error("Error in checking heartbeat for : {}", instance.getAppName());
                 }
@@ -55,13 +55,13 @@ public class HeartBeatScheduler {
         });
         try {
             ResponseEntity<String> responseEntity = restTemplate.getForEntity(selfUrl, String.class);
-            LOGGER.info("Checking heartbeat for : SELF, URI : {}, HttpStatusCode : {}", selfUrl, responseEntity.getStatusCode());
+            LOGGER.info("Checking heartbeat for : SELF : {} : {}", selfUrl, responseEntity.getStatusCode());
         } catch (Exception e) {
             LOGGER.error("Error in checking heartbeat for : SELF , {}", e);
         }
         try {
             ResponseEntity<String> responseEntity = restTemplate.getForEntity(uiApp, String.class);
-            LOGGER.info("Checking heartbeat for : SELF, UI-App : {}, HttpStatusCode : {}", uiApp, responseEntity.getStatusCode());
+            LOGGER.info("Checking heartbeat for : UI-App : {} : {}", uiApp, responseEntity.getStatusCode());
         } catch (Exception e) {
             LOGGER.error("Error in checking heartbeat for : UI-App , {}", e);
         }

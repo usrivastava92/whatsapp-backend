@@ -9,6 +9,8 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
+
 import static app.whatsapp.profile.constants.ProfileServiceConstants.*;
 
 @Component
@@ -16,7 +18,7 @@ public class CreateTokenProcessor implements IRequestProcessor<User, User, Strin
 
     private CacheService cacheService;
 
-    @Value("${application.access-token.expiry.sec:60}")
+    @Value("${application.access-token.expiry.seconds:60}")
     private long accessTokenExpiry;
 
     public CreateTokenProcessor(CacheService cacheService) {
@@ -35,7 +37,7 @@ public class CreateTokenProcessor implements IRequestProcessor<User, User, Strin
                 .append(System.currentTimeMillis())
                 .append(RandomStringUtils.randomAlphanumeric(4))
                 .toString();
-        cacheService.set(accessToken, user, accessTokenExpiry);
+        cacheService.set(accessToken, user, Duration.ofSeconds(accessTokenExpiry));
         return accessToken;
     }
 

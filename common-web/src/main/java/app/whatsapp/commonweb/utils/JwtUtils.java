@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.Duration;
 import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
@@ -137,21 +138,11 @@ public class JwtUtils {
             return this;
         }
 
-        public Builder withValidityInSeconds(long seconds) {
-            if (seconds < 1) {
-                seconds = 0;
+        public Builder withValidity(Duration duration) {
+            if (duration == null || duration.isNegative()) {
+                duration = Duration.ZERO;
             }
-            jwtBuilder.withExpiresAt(new Date(System.currentTimeMillis() + (seconds * 1000)));
-            return this;
-        }
-
-        public Builder withValidityInMinutes(long minutes) {
-            withValidityInSeconds(minutes * 60);
-            return this;
-        }
-
-        public Builder withValidityInHours(long hours) {
-            withValidityInHours(hours * 60);
+            jwtBuilder.withExpiresAt(new Date(System.currentTimeMillis() + duration.toMillis()));
             return this;
         }
 

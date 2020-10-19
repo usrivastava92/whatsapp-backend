@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import static app.whatsapp.profile.constants.ProfileServiceConstants.*;
 
+import java.time.Duration;
 import java.util.Optional;
 
 @Service
@@ -38,7 +39,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         Optional<User> userFromDb = userRepository.findByUsername(username);
         if (userFromDb.isPresent()) {
             user = userFromDb.get();
-            cacheService.set(ConstantsUtility.getUserCacheKey(user.getId()), user, userCacheExpiry);
+            cacheService.set(ConstantsUtility.getUserCacheKey(user.getId()), user, Duration.ofSeconds(userCacheExpiry));
             return user;
         }
         throw new UsernameNotFoundException(Extra.USER_NOT_FOUND);
@@ -53,7 +54,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         } else {
             Optional<User> userFromDb = userRepository.findById(id);
             if (userFromDb.isPresent()) {
-                cacheService.set(ConstantsUtility.getUserCacheKey(id), userFromDb.get(), userCacheExpiry);
+                cacheService.set(ConstantsUtility.getUserCacheKey(id), userFromDb.get(), Duration.ofSeconds(userCacheExpiry));
                 user = userFromDb.get();
             }
         }
@@ -63,14 +64,14 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Override
     public User update(User user) {
         User updatedUser = userRepository.save(user);
-        cacheService.set(ConstantsUtility.getUserCacheKey(updatedUser.getId()), updatedUser, userCacheExpiry);
+        cacheService.set(ConstantsUtility.getUserCacheKey(updatedUser.getId()), updatedUser, Duration.ofSeconds(userCacheExpiry));
         return updatedUser;
     }
 
     @Override
     public User addUser(User user) {
         User addedUser = userRepository.save(user);
-        cacheService.set(ConstantsUtility.getUserCacheKey(addedUser.getId()), addedUser, userCacheExpiry);
+        cacheService.set(ConstantsUtility.getUserCacheKey(addedUser.getId()), addedUser, Duration.ofSeconds(userCacheExpiry));
         return user;
     }
 
