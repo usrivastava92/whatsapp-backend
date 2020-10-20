@@ -1,15 +1,11 @@
 package app.whatsapp.discoveryservice.schedulers;
 
-import app.whatsapp.commonweb.config.CommonWebSpringConfig;
 import com.netflix.discovery.shared.Applications;
 import com.netflix.eureka.EurekaServerContextHolder;
 import com.netflix.eureka.registry.PeerAwareInstanceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -28,7 +24,7 @@ public class HeartBeatScheduler {
     @Value("${application.web.protocol}://${HOSTNAME}${eureka.dashboard.path}")
     private String selfUrl;
     @Value("${application.ui.app.uri}")
-    private String uiApp;
+    private String uiAppUrl;
 
     private final RestTemplate restTemplate;
 
@@ -49,7 +45,7 @@ public class HeartBeatScheduler {
                     ResponseEntity<String> responseEntity = restTemplate.getForEntity(instance.getStatusPageUrl(), String.class);
                     LOGGER.info("Checking heartbeat for : {} : {} : {}", instance.getAppName(), instance.getStatusPageUrl(), responseEntity.getStatusCode());
                 } catch (Exception e) {
-                    LOGGER.error("Error in checking heartbeat for : {}", instance.getAppName());
+                    LOGGER.error("Error in checking heartbeat for : {} : {}", instance.getAppName(), instance.getStatusPageUrl());
                 }
             });
         });
@@ -57,13 +53,13 @@ public class HeartBeatScheduler {
             ResponseEntity<String> responseEntity = restTemplate.getForEntity(selfUrl, String.class);
             LOGGER.info("Checking heartbeat for : SELF : {} : {}", selfUrl, responseEntity.getStatusCode());
         } catch (Exception e) {
-            LOGGER.error("Error in checking heartbeat for : SELF , {}", e);
+            LOGGER.error("Error in checking heartbeat for : SELF , {}", selfUrl);
         }
         try {
-            ResponseEntity<String> responseEntity = restTemplate.getForEntity(uiApp, String.class);
-            LOGGER.info("Checking heartbeat for : UI-App : {} : {}", uiApp, responseEntity.getStatusCode());
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity(uiAppUrl, String.class);
+            LOGGER.info("Checking heartbeat for : UI-App : {} : {}", uiAppUrl, responseEntity.getStatusCode());
         } catch (Exception e) {
-            LOGGER.error("Error in checking heartbeat for : UI-App , {}", e);
+            LOGGER.error("Error in checking heartbeat for : UI-App , {}", uiAppUrl);
         }
     }
 
