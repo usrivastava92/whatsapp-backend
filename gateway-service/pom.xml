@@ -10,7 +10,6 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <groupId>app.whatsapp</groupId>
     <artifactId>gateway-service</artifactId>
     <version>${project.parent.version}</version>
 

@@ -20,7 +20,7 @@ public class GatewayMqConfig {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GatewayMqConfig.class);
 
-    @Value("${application.server.id}")
+    @Value("${eureka.instance.instance-id}")
     private long serverId;
 
     @Bean

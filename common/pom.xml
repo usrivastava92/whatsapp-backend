@@ -10,7 +10,6 @@
         <relativePath>../pom.xml</relativePath> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>app.whatsapp</groupId>
     <artifactId>common</artifactId>
     <version>${project.parent.version}</version>
     <packaging>jar</packaging>
