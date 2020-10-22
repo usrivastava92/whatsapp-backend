@@ -1,6 +1,5 @@
 package app.whatsapp.gateway.service.impl;
 
-import app.whatsapp.common.constants.CommonConstants;
 import app.whatsapp.commonweb.models.sessions.request.AddSessionRequest;
 import app.whatsapp.commonweb.models.sessions.request.EvictSessionRequest;
 import app.whatsapp.commonweb.models.sessions.response.AddSessionResponse;

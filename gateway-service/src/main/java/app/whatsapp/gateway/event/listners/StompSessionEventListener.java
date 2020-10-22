@@ -6,6 +6,8 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
+import java.util.Objects;
+
 @Component
 public class StompSessionEventListener {
 
@@ -17,7 +19,9 @@ public class StompSessionEventListener {
 
     @EventListener
     private void handleSessionDisconnected(SessionDisconnectEvent event) {
-        StompPrincipal stompPrincipal = (StompPrincipal) event.getUser();
-        sessionRegistryService.evictSession(stompPrincipal);
+        if (Objects.nonNull(event.getUser())) {
+            StompPrincipal stompPrincipal = (StompPrincipal) event.getUser();
+            sessionRegistryService.evictSession(stompPrincipal);
+        }
     }
 }

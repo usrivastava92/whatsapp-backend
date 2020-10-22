@@ -9,14 +9,9 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.client.RestTemplate;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
-
 @Service
-@Validated
 public class ProfileServiceImpl implements ProfileService {
 
     @Value("${application.profile.get.url}")
@@ -29,12 +24,12 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public ProfileResponse getProfile(@Valid @NotEmpty String jwt) {
+    public ProfileResponse getProfile(String jwt) {
         return getProfileResponse(jwt, getProfileUrl);
     }
 
     @Override
-    public ProfileResponse getProfile(@Valid @NotEmpty String jwt,@Valid @NotEmpty String profileId) {
+    public ProfileResponse getProfile(String jwt, String profileId) {
         return getProfileResponse(jwt, new StringBuilder(getProfileUrl).append(CommonConstants.SpecialChars.FORWARD_SLASH).append(profileId).toString());
     }
 
