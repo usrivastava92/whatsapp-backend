@@ -1,5 +1,7 @@
 package app.whatsapp.apigateway.config;
 
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.cloud.gateway.filter.factory.DedupeResponseHeaderGatewayFilterFactory;
 import org.springframework.cloud.gateway.handler.RoutePredicateHandlerMapping;
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -10,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.cors.CorsConfiguration;
+import reactor.core.publisher.Mono;
 
 import java.util.Collections;
 import java.util.function.Function;
@@ -34,6 +37,17 @@ public class RouteConfig {
                 .dedupeResponseHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, strategy);
     }
 
+    @Bean
+    public GlobalFilter globalFilter() {
+        return (exchange, chain) -> chain.filter(exchange).then(Mono.fromRunnable(() -> {
+            String origin = exchange.getRequest().getHeaders().getOrigin();
+            if (StringUtils.isNotBlank(origin)) {
+                exchange.getResponse().getHeaders().setAccessControlAllowOrigin(origin);
+            }else{
+                exchange.getResponse().getHeaders().setAccessControlAllowOrigin(CorsConfiguration.ALL);
+            }
+        }));
+    }
 
     @Bean
     public CorsConfiguration corsConfiguration(RoutePredicateHandlerMapping routePredicateHandlerMapping) {
@@ -42,6 +56,7 @@ public class RouteConfig {
         corsConfiguration.setAllowedMethods(Collections.singletonList(CorsConfiguration.ALL));
         corsConfiguration.setAllowedHeaders(Collections.singletonList(CorsConfiguration.ALL));
         corsConfiguration.setMaxAge(3600L);
+        corsConfiguration.setAllowCredentials(true);
         routePredicateHandlerMapping.setCorsConfigurations(Collections.singletonMap("/**", corsConfiguration));
         return corsConfiguration;
     }
