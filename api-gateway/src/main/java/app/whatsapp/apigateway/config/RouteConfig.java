@@ -42,7 +42,6 @@ public class RouteConfig {
         corsConfiguration.setAllowedMethods(Collections.singletonList(CorsConfiguration.ALL));
         corsConfiguration.setAllowedHeaders(Collections.singletonList(CorsConfiguration.ALL));
         corsConfiguration.setMaxAge(3600L);
-        corsConfiguration.setAllowCredentials(true);
         routePredicateHandlerMapping.setCorsConfigurations(Collections.singletonMap("/**", corsConfiguration));
         return corsConfiguration;
     }
