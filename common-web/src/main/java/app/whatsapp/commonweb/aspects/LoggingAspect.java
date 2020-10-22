@@ -3,6 +3,7 @@ package app.whatsapp.commonweb.aspects;
 import app.whatsapp.common.constants.CommonConstants;
 import app.whatsapp.common.models.BaseResponse;
 import app.whatsapp.commonweb.annotations.log.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -21,11 +22,10 @@ import java.util.Set;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Aspect
 @Component
 public class LoggingAspect {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(LoggingAspect.class);
 
     @Around(value = "@annotation(app.whatsapp.commonweb.annotations.log.Log)")
     public Object around(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
@@ -43,13 +43,13 @@ public class LoggingAspect {
             Map<String, String> loggableArgs = Arrays.stream(method.getParameters())
                     .filter(i -> isLoggable(i) && argMap.get(i.getType()) != null)
                     .collect(Collectors.toMap(i -> i.getName(), i -> argMap.get(i.getType()).toString()));
-            LOGGER.info("Method args for \"{}\" are : {}", fullMethodName, loggableArgs);
+            log.info("Method args for \"{}\" are : {}", fullMethodName, loggableArgs);
         }
         Object returnValue = proceedingJoinPoint.proceed();
         if (loggable.returnVal() || (isControllerMethod && returnValue instanceof BaseResponse)) {
-            LOGGER.info("Return value for \"{}\" is : {} ", fullMethodName, returnValue);
+            log.info("Return value for \"{}\" is : {} ", fullMethodName, returnValue);
         }
-        LOGGER.info("Time taken for \"{}\" execution is : {} milliseconds", fullMethodName, System.currentTimeMillis() - startTime);
+        log.info("Time taken for \"{}\" execution is : {} milliseconds", fullMethodName, System.currentTimeMillis() - startTime);
         return returnValue;
     }
 

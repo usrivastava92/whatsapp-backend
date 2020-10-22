@@ -15,8 +15,8 @@ public class AddSessionRequest implements Serializable {
 
     private static final long serialVersionUID = 8850794019938454245L;
 
-    @NotNull
-    private Long userId;
+    @NotEmpty
+    private String userId;
     @NotEmpty
     private String routingKey;
 

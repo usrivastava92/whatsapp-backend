@@ -2,6 +2,7 @@ package app.whatsapp.commonweb.config;
 
 import app.whatsapp.commonweb.hooks.MqMessageReceiver;
 import app.whatsapp.commonweb.properties.MqConfigProperties;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,11 +17,10 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+@Slf4j
 @Configuration
 @ConditionalOnProperty(value = "application.mq.enable", havingValue = "true")
 public class MqConfig {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(MqConfig.class);
 
     private MqConfigProperties mqConfigProperties;
 
@@ -30,7 +30,7 @@ public class MqConfig {
 
     @Bean
     public ConnectionFactory connectionFactory() {
-        LOGGER.info("Initializing MqConnectionFactory");
+        log.info("Initializing MqConnectionFactory");
         CachingConnectionFactory cachingConnectionFactory = null;
         if (StringUtils.isBlank(mqConfigProperties.getHostname())) {
             cachingConnectionFactory = new CachingConnectionFactory();

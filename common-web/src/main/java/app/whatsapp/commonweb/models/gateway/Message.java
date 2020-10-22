@@ -8,18 +8,15 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 @Data
+@NoArgsConstructor
 public class Message implements Serializable {
 
-    private final Long timestamp;
+    private String timestamp;
     @JsonProperty("from")
-    private Long fromUserId;
+    private String fromUserId;
     @JsonProperty("to")
-    private Long toUserId;
+    private String toUserId;
     private String message;
-
-    public Message() {
-        this.timestamp = System.currentTimeMillis();
-    }
 
 }
 

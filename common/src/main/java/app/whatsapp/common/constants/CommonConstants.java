@@ -5,6 +5,8 @@ public class CommonConstants {
     public static final class Alphabets{
         public static final String A = "A";
         public static final String B = "B";
+        public static final String F = "F";
+        public static final String S = "S";
     }
 
     public static final class SpecialChars{
@@ -31,5 +33,15 @@ public class CommonConstants {
         public static final String UNDERSCORE = "_";
     }
 
+    public static final class Http{
+        public static final String BEARER = "Bearer";
+    }
+
+    public static final class Extra{
+        public static final String USER_ID = "userId";
+        public static final String USERNAME = "username";
+        public static final String ID = "id";
+        public static final String PASSWORD = "password";
+    }
 
 }

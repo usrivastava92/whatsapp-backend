@@ -9,9 +9,7 @@ import app.whatsapp.commonweb.models.profile.response.ProfileResponse;
 import app.whatsapp.common.enums.ECommonResponseCodes;
 import app.whatsapp.common.processors.IRequestProcessor;
 import app.whatsapp.commonweb.utils.JwtUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -21,17 +19,18 @@ import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 
-
+@Slf4j
 @Component
 public class LoginProcessor implements IRequestProcessor<LoginRequest, LoginRequest, LoginResponse, LoginResponse> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LoginProcessor.class);
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
     @Value("${application.jwt.expiry.seconds:900}")
     private long jwtExpiry;
+
+    private AuthenticationManager authenticationManager;
+
+    public LoginProcessor(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
+    }
 
     @Override
     public LoginRequest preProcess(LoginRequest request) {
@@ -40,7 +39,7 @@ public class LoginProcessor implements IRequestProcessor<LoginRequest, LoginRequ
 
     @Override
     public LoginResponse onProcess(LoginRequest request, LoginRequest serviceRequest) {
-        LoginResponse loginResponse = null;
+        LoginResponse loginResponse;
         try {
             String username = serviceRequest.getUsername();
             String password = serviceRequest.getPassword();
@@ -53,7 +52,7 @@ public class LoginProcessor implements IRequestProcessor<LoginRequest, LoginRequ
         } catch (BadCredentialsException e) {
             loginResponse = new LoginResponse(EProfileServiceResponseCodes.INVALID_CREDENTIALS);
         } catch (Exception e) {
-            LOGGER.error("Exception in generating jwt {} ", e);
+            log.error("Exception in generating jwt {} ", e);
             loginResponse = new LoginResponse(ECommonResponseCodes.SYSTEM_ERROR);
         }
         return loginResponse;

@@ -1,25 +1,25 @@
 package app.whatsapp.profile.config;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+@Slf4j
 @Configuration
 public class SpringConfig implements WebMvcConfigurer {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SpringConfig.class);
-
-    @Autowired
     private HandlerInterceptor baseInterceptor;
+
+    public SpringConfig(HandlerInterceptor baseInterceptor) {
+        this.baseInterceptor = baseInterceptor;
+    }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        LOGGER.trace("Registering interceptor : {} ", baseInterceptor.getClass());
+        log.trace("Registering interceptor : {} ", baseInterceptor.getClass());
         registry.addInterceptor(baseInterceptor);
     }
 
@@ -27,4 +27,5 @@ public class SpringConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**");
     }
+
 }

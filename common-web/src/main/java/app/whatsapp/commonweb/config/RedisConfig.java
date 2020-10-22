@@ -3,6 +3,7 @@ package app.whatsapp.commonweb.config;
 import app.whatsapp.commonweb.properties.RedisConfigProperties;
 import io.lettuce.core.ClientOptions;
 import io.lettuce.core.SocketOptions;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,11 +20,10 @@ import org.springframework.data.redis.core.RedisTemplate;
 import java.io.Serializable;
 import java.time.Duration;
 
+@Slf4j
 @Configuration
 @ConditionalOnProperty(value = "application.redis.enable", havingValue = "true")
 public class RedisConfig {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(RedisConfig.class);
 
     private RedisConfigProperties redisConfigProperties;
 
@@ -33,7 +33,7 @@ public class RedisConfig {
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
-        LOGGER.info("Initializing RedisConnectionFactory");
+        log.info("Initializing RedisConnectionFactory");
         RedisStandaloneConfiguration redisStandaloneConfiguration;
         if (StringUtils.isNotBlank(redisConfigProperties.getHostname())) {
             redisStandaloneConfiguration = new RedisStandaloneConfiguration(redisConfigProperties.getHostname(), redisConfigProperties.getPort());
@@ -62,7 +62,7 @@ public class RedisConfig {
 
     @Bean
     public RedisTemplate<String, Serializable> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
-        LOGGER.info("Initializing RedisTemplate");
+        log.info("Initializing RedisTemplate");
         RedisTemplate<String, Serializable> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory);
         return redisTemplate;

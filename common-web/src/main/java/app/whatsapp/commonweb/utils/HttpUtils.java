@@ -6,9 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class HttpUtils {
 
@@ -17,16 +15,23 @@ public class HttpUtils {
             return Collections.emptyMap();
         }
         Map<String, String> queryParams = new HashMap<>();
-        for (String param : queryParamString.split(CommonConstants.SpecialChars.AMPERSAND)) {
+        Arrays.stream(queryParamString.split(CommonConstants.SpecialChars.AMPERSAND)).forEach(param -> {
             String[] pair = param.split(CommonConstants.SpecialChars.EQUALS);
             String key = pair[0];
-            String value = CommonConstants.SpecialChars.BLANK;
-            if (pair.length > 1) {
-                value = pair[1];
-            }
+            String value = pair.length > 1 ? pair[1] : CommonConstants.SpecialChars.BLANK;
             queryParams.put(key, value);
-        }
+        });
         return queryParams;
+    }
+
+    public static Optional<String> getJwtFromAuthorizationHeader(String authorizationHeader) {
+        if (StringUtils.isNotBlank(authorizationHeader) && authorizationHeader.startsWith(CommonConstants.Http.BEARER)) {
+            String jwt = authorizationHeader.replace(CommonConstants.Http.BEARER, CommonConstants.SpecialChars.BLANK).trim();
+            if (StringUtils.isNotBlank(jwt)) {
+                return Optional.of(jwt);
+            }
+        }
+        return Optional.empty();
     }
 
 }

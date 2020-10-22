@@ -19,7 +19,6 @@ import java.util.Optional;
 
 public class JwtUtils {
 
-    private static final String BEARER = "Bearer";
     private static final String RANDOM_CYPHER = "randomKey";
 
     private static DecodedJWT decodeJwt(String jwt) throws JWTDecodeException {
@@ -70,23 +69,13 @@ public class JwtUtils {
 
     public static Optional<String> getJwtFromHeader(HttpServletRequest httpServletRequest, String headerKey) {
         if (httpServletRequest != null && StringUtils.isNotBlank(headerKey)) {
-            return getJwtFromHeader(httpServletRequest.getHeader(headerKey));
+            return HttpUtils.getJwtFromAuthorizationHeader(httpServletRequest.getHeader(headerKey));
         }
         return Optional.empty();
     }
 
     public static Optional<String> getJwtFromHeader(HttpServletRequest httpServletRequest) {
         return getJwtFromHeader(httpServletRequest, HttpHeaders.AUTHORIZATION);
-    }
-
-    public static Optional<String> getJwtFromHeader(String authorizationHeader) {
-        if (StringUtils.isNotBlank(authorizationHeader) && authorizationHeader.startsWith(BEARER)) {
-            String jwt = authorizationHeader.replace(BEARER, CommonConstants.SpecialChars.BLANK).trim();
-            if (StringUtils.isNotBlank(jwt)) {
-                return Optional.of(jwt);
-            }
-        }
-        return Optional.empty();
     }
 
     public static Optional<Date> getIssuedAt(String jwt) {

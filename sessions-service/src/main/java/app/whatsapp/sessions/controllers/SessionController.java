@@ -1,5 +1,6 @@
 package app.whatsapp.sessions.controllers;
 
+import app.whatsapp.commonweb.annotations.log.Log;
 import app.whatsapp.commonweb.models.sessions.request.AddSessionRequest;
 import app.whatsapp.commonweb.models.sessions.request.EvictSessionRequest;
 import app.whatsapp.commonweb.models.sessions.response.AddSessionResponse;
@@ -16,17 +17,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/session")
 public class SessionController {
 
-    @Autowired
     private AddSessionProcessor addSessionProcessor;
-
-    @Autowired
     private EvictSessionProcessor evictSessionProcessor;
 
+    public SessionController(AddSessionProcessor addSessionProcessor, EvictSessionProcessor evictSessionProcessor) {
+        this.addSessionProcessor = addSessionProcessor;
+        this.evictSessionProcessor = evictSessionProcessor;
+    }
+
+    @Log
     @PostMapping("/add")
     public AddSessionResponse addSession(@RequestBody AddSessionRequest addSessionRequest){
         return addSessionProcessor.process(addSessionRequest);
     }
 
+    @Log
     @PostMapping("/evict")
     public EvictSessionResponse evictSession(@RequestBody EvictSessionRequest evictSessionRequest){
         return evictSessionProcessor.process(evictSessionRequest);

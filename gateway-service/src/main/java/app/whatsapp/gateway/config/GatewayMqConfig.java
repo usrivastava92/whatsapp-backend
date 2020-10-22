@@ -2,8 +2,7 @@ package app.whatsapp.gateway.config;
 
 import app.whatsapp.common.constants.CommonConstants;
 import app.whatsapp.gateway.constants.GatewayServiceConstants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.*;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,25 +13,24 @@ import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 
+@Slf4j
 @Configuration
 @ConditionalOnProperty(value = "application.mq.enable", havingValue = "true")
 public class GatewayMqConfig {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(GatewayMqConfig.class);
 
     @Value("${eureka.instance.instance-id}")
     private long serverId;
 
     @Bean
     public Queue incomingMessageQueue() {
-        LOGGER.info("Initialized queue : {}", GatewayServiceConstants.MqConstants.INCOMING_MESSAGES_QUEUE);
+        log.info("Initialized queue : {}", GatewayServiceConstants.MqConstants.INCOMING_MESSAGES_QUEUE);
         return new Queue(GatewayServiceConstants.MqConstants.INCOMING_MESSAGES_QUEUE, false);
     }
 
     @Bean
     public Queue outgoingMessageQueue() {
         String queueName = GatewayServiceConstants.MqConstants.OUTGOING_MESSAGES_QUEUE.concat(CommonConstants.SpecialChars.UNDERSCORE + serverId);
-        LOGGER.info("Initialized queue : {}", queueName);
+        log.info("Initialized queue : {}", queueName);
         return new Queue(queueName, false);
     }
 
