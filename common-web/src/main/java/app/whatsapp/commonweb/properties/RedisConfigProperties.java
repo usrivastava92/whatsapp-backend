@@ -8,6 +8,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+
 @Data
 @Slf4j
 @Component
@@ -27,13 +29,10 @@ public class RedisConfigProperties {
     private Long commandTimeoutMs;
     private String uri;
 
-    public RedisConfigProperties() {
-        log.info("Initializing redis configuration");
-        populateDetailsUsingUri();
-    }
-
+    @PostConstruct
     private void populateDetailsUsingUri() {
         if (StringUtils.isNotBlank(uri)) {
+            log.info("Resolving redis uri details");
             String[] tokens = uri.split(SCHEMA_SEPARATOR);
             if (tokens.length < 2) {
                 throw new IllegalArgumentException("redis uri is invalid");
