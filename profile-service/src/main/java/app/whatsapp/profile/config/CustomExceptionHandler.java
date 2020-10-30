@@ -1,5 +1,6 @@
 package app.whatsapp.profile.config;
 
+import app.whatsapp.common.models.ResponseStatus;
 import app.whatsapp.profile.enums.EProfileServiceResponseCodes;
 import app.whatsapp.profile.exceptions.JwtValidationException;
 import app.whatsapp.common.models.BaseResponse;
@@ -13,7 +14,9 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(value = {JwtValidationException.class})
     public ResponseEntity<BaseResponse> handleJwtValidationException() {
-        return new ResponseEntity<>(new BaseResponse(EProfileServiceResponseCodes.INVALID_JWT), HttpStatus.BAD_REQUEST);
+        BaseResponse baseResponse = new BaseResponse();
+        baseResponse.setResponseStatus(new ResponseStatus(EProfileServiceResponseCodes.INVALID_JWT));
+        return ResponseEntity.ok(baseResponse);
     }
 
 }

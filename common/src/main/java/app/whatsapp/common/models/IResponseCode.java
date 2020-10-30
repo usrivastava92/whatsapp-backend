@@ -1,5 +1,6 @@
 package app.whatsapp.common.models;
 
+
 public interface IResponseCode {
 
     String getCode();

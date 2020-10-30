@@ -34,20 +34,20 @@ public interface CacheService {
 
     Map<Serializable, Serializable> hGetAll(String key);
 
-    boolean hExists(String key, Serializable field);
+    boolean hExists(String key, String field);
 
-    void hIncBy(String key, Serializable field, long incBy);
+    void hIncBy(String key, String field, long incBy);
 
-    void hSet(String key, Serializable field, Serializable value);
+    void hSet(String key, String field, Serializable value);
 
-    void hSet(String key, Serializable field, Serializable value, Duration ttl);
+    void hSet(String key, String field, Serializable value, Duration ttl);
 
-    void hSetNx(String key, Serializable field, Serializable value);
+    void hSetNx(String key, String field, Serializable value);
 
-    <T extends Serializable> Optional<T> hGet(String key, Serializable field, Class<T> tClass);
+    <T extends Serializable> Optional<T> hGet(String key, String field, Class<T> tClass);
 
-    Optional<Serializable> hGet(String key, Serializable field);
+    Optional<Serializable> hGet(String key, String field);
 
-    void hDel(String key, Serializable field);
+    void hDel(String key, String field);
 
 }

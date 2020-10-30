@@ -1,17 +1,20 @@
 package app.whatsapp.common.models;
 
-import lombok.AllArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class BaseResponse {
 
+    @NonNull
     private ResponseStatus responseStatus;
 
     public BaseResponse(IResponseCode iResponseCode) {
         responseStatus = new ResponseStatus(iResponseCode);
     }
+
 }

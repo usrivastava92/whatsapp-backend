@@ -25,9 +25,7 @@ import java.util.Optional;
 @Component
 public class JwtValidationFilter extends OncePerRequestFilter {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(JwtValidationFilter.class);
-
-    private UserService userService;
+    private final UserService userService;
 
     public JwtValidationFilter(UserService userService) {
         this.userService = userService;
@@ -37,18 +35,16 @@ public class JwtValidationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain)
             throws ServletException, IOException {
         String jwt = extractJwt(httpServletRequest);
-        JwtUtils.getSubject(jwt).ifPresent(username -> {
-            JwtUtils.getClaim(jwt, ProfileServiceConstants.Extra.ID, Long.class).ifPresent(profileId -> {
-                userService.findUserById(profileId).ifPresent(user -> {
-                    UserDetails userDetails = user;
+        JwtUtils.getSubject(jwt)
+                .flatMap(username -> JwtUtils.getClaim(jwt, ProfileServiceConstants.Extra.ID, Long.class))
+                .flatMap(userService::findUserById)
+                .ifPresent(user -> {
                     JwtUtils.Verifier.getInstance(jwt, user.getPassword()).withClaim(ProfileServiceConstants.Extra.ID, user.getId()).verify();
                     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                            new UsernamePasswordAuthenticationToken(user, null, ((UserDetails) user).getAuthorities());
                     usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
                     SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
                 });
-            });
-        });
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
 

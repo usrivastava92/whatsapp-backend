@@ -11,20 +11,6 @@ import lombok.Data;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AddUserResponse extends BaseResponse {
 
-    @JsonProperty("userProfile")
-    private ProfileResponse profileResponse;
-
-    public AddUserResponse(IResponseCode iResponseCode) {
-        super(iResponseCode);
-    }
-
-    public AddUserResponse(IResponseCode iResponseCode, UserProfile userProfile) {
-        super(iResponseCode);
-        this.profileResponse = new ProfileResponse(userProfile);
-    }
-
-    public AddUserResponse(UserProfile userProfile) {
-        this.profileResponse = new ProfileResponse(userProfile);
-    }
+    private UserProfile userProfile;
 
 }

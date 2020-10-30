@@ -47,10 +47,10 @@ public class GlobalExceptionHandler {
                 Path.Node node = iterator.next();
                 if (!iterator.hasNext()) {
                     sb.append(node)
-                    .append(CommonConstants.SpecialChars.WHITE_SPACE)
-                    .append(CommonConstants.SpecialChars.COLON)
-                    .append(CommonConstants.SpecialChars.WHITE_SPACE)
-                    .append(constraintViolation.getMessage());
+                            .append(CommonConstants.SpecialChars.WHITE_SPACE)
+                            .append(CommonConstants.SpecialChars.COLON)
+                            .append(CommonConstants.SpecialChars.WHITE_SPACE)
+                            .append(constraintViolation.getMessage());
                 }
             }
             errors.add(sb.toString());

@@ -31,14 +31,14 @@ public class MqMessageReceiverImpl implements MqMessageReceiver {
     @Override
     public void handleMessage(byte[] bytes) throws Exception {
         Message message = JsonUtils.map(new String(bytes), Message.class);
+        log.info("Message received from queue : {}", message);
         if (message.getToUserId() != null) {
-            Optional<String> optionalRoutingKey = cacheService.hGet(SessionServiceConstants.USER_GATEWAY_MAPPING_KEY, message.getToUserId(), String.class);
+            Optional<String> optionalRoutingKey = cacheService.hGet(SessionServiceConstants.USER_GATEWAY_MAPPING_KEY, String.valueOf(message.getToUserId()), String.class);
             if (optionalRoutingKey.isPresent() && StringUtils.isNotBlank(optionalRoutingKey.get())) {
                 mqMessagePublisher.send(exchange.getName(), optionalRoutingKey.get(), message);
             } else {
                 throw new Exception("Routing key can't be null or empty");
             }
         }
-        log.info("Message received from queue : {}", message);
     }
 }

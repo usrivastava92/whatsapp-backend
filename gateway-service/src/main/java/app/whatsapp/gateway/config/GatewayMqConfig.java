@@ -55,10 +55,10 @@ public class GatewayMqConfig {
     }
 
     @Bean
-    public SimpleMessageListenerContainer container(ConnectionFactory connectionFactory, MessageListenerAdapter messageListenerAdapter) {
+    public SimpleMessageListenerContainer container(ConnectionFactory connectionFactory, MessageListenerAdapter messageListenerAdapter, @Qualifier("outgoingMessageQueue") Queue outgoingMessageQueue) {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
-        container.setQueues(outgoingMessageQueue());
+        container.setQueues(outgoingMessageQueue);
         container.setMessageListener(messageListenerAdapter);
         return container;
     }

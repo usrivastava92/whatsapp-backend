@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AddUserRequest implements UserProfile {
+public class AddUserRequest {
 
     @JsonIgnore
     private Long id;

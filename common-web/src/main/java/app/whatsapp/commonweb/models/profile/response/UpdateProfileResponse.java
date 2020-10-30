@@ -10,43 +10,8 @@ import lombok.Data;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UpdateProfileResponse extends BaseResponse implements UserProfile {
+public class UpdateProfileResponse extends BaseResponse {
 
-    private Long id;
-    private String username;
-    @JsonIgnore
-    private String password;
-    private String firstname;
-    private String lastname;
-    private String email;
-    private String contactNumber;
-    private EProfileStatus profileStatus;
-
-    public UpdateProfileResponse(IResponseCode iResponseCode) {
-        super(iResponseCode);
-    }
-
-    public UpdateProfileResponse(IResponseCode iResponseCode, UserProfile userProfile) {
-        super(iResponseCode);
-        this.id = userProfile.getId();
-        this.username = userProfile.getUsername();
-        this.password = userProfile.getPassword();
-        this.firstname = userProfile.getFirstname();
-        this.lastname = userProfile.getLastname();
-        this.email = userProfile.getEmail();
-        this.contactNumber = userProfile.getContactNumber();
-        this.profileStatus = userProfile.getProfileStatus();
-    }
-
-    public UpdateProfileResponse(UserProfile userProfile) {
-        this.id = userProfile.getId();
-        this.username = userProfile.getUsername();
-        this.password = userProfile.getPassword();
-        this.firstname = userProfile.getFirstname();
-        this.lastname = userProfile.getLastname();
-        this.email = userProfile.getEmail();
-        this.contactNumber = userProfile.getContactNumber();
-        this.profileStatus = userProfile.getProfileStatus();
-    }
+    private UserProfile userProfile;
 
 }

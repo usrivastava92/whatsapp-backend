@@ -1,14 +1,15 @@
 package app.whatsapp.profile.processors;
 
+import app.whatsapp.common.models.ResponseStatus;
 import app.whatsapp.profile.constants.ProfileServiceConstants;
 import app.whatsapp.profile.entities.User;
 import app.whatsapp.profile.enums.EProfileServiceResponseCodes;
 import app.whatsapp.commonweb.models.profile.request.LoginRequest;
 import app.whatsapp.commonweb.models.profile.response.LoginResponse;
-import app.whatsapp.commonweb.models.profile.response.ProfileResponse;
 import app.whatsapp.common.enums.ECommonResponseCodes;
 import app.whatsapp.common.processors.IRequestProcessor;
 import app.whatsapp.commonweb.utils.JwtUtils;
+import app.whatsapp.profile.utility.ModelMappingUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,7 +27,7 @@ public class LoginProcessor implements IRequestProcessor<LoginRequest, LoginRequ
     @Value("${application.jwt.expiry.seconds:900}")
     private long jwtExpiry;
 
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
     public LoginProcessor(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
@@ -39,7 +40,7 @@ public class LoginProcessor implements IRequestProcessor<LoginRequest, LoginRequ
 
     @Override
     public LoginResponse onProcess(LoginRequest request, LoginRequest serviceRequest) {
-        LoginResponse loginResponse;
+        LoginResponse loginResponse = new LoginResponse();
         try {
             String username = serviceRequest.getUsername();
             String password = serviceRequest.getPassword();
@@ -48,12 +49,14 @@ public class LoginProcessor implements IRequestProcessor<LoginRequest, LoginRequ
             String jwt = JwtUtils.Builder.getInstance().withSubject(username)
                     .withClaim(ProfileServiceConstants.Extra.ID, user.getId())
                     .signWith(password).withValidity(Duration.ofSeconds(this.jwtExpiry)).build();
-            loginResponse = new LoginResponse(ECommonResponseCodes.SUCCESS, jwt, new ProfileResponse(user));
+            loginResponse.setToken(jwt);
+            loginResponse.setUserProfile(ModelMappingUtils.getUserProfile(user));
+            loginResponse.setResponseStatus(new ResponseStatus(ECommonResponseCodes.SUCCESS));
         } catch (BadCredentialsException e) {
-            loginResponse = new LoginResponse(EProfileServiceResponseCodes.INVALID_CREDENTIALS);
+            loginResponse.setResponseStatus(new ResponseStatus(EProfileServiceResponseCodes.INVALID_CREDENTIALS));
         } catch (Exception e) {
-            log.error("Exception in generating jwt {} ", e);
-            loginResponse = new LoginResponse(ECommonResponseCodes.SYSTEM_ERROR);
+            log.error("Exception in generating jwt ", e);
+            loginResponse.setResponseStatus(new ResponseStatus(ECommonResponseCodes.SYSTEM_ERROR));
         }
         return loginResponse;
     }

@@ -2,6 +2,7 @@ package app.whatsapp.profile.entities;
 
 import app.whatsapp.commonweb.enums.profile.EProfileStatus;
 import app.whatsapp.commonweb.models.profile.UserProfile;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,9 +14,9 @@ import java.util.Collections;
 
 @Data
 @Entity
-@Table(name = "users")
 @NoArgsConstructor
-public class User implements UserDetails, UserProfile {
+@Table(name = "users")
+public class User implements UserDetails {
 
     private static final long serialVersionUID = -5564974736195263335L;
 
@@ -36,17 +37,6 @@ public class User implements UserDetails, UserProfile {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private EProfileStatus profileStatus;
-
-    public User(UserProfile userProfile) {
-        this.id = userProfile.getId();
-        this.username = userProfile.getUsername();
-        this.password = userProfile.getPassword();
-        this.firstname = userProfile.getFirstname();
-        this.lastname = userProfile.getLastname();
-        this.contactNumber = userProfile.getContactNumber();
-        this.email = userProfile.getEmail();
-        this.profileStatus = userProfile.getProfileStatus();
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

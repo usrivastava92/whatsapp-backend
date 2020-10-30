@@ -1,6 +1,7 @@
 package app.whatsapp.gateway.interceptor;
 
 import app.whatsapp.common.constants.CommonConstants;
+import app.whatsapp.commonweb.models.profile.UserProfile;
 import app.whatsapp.commonweb.models.profile.response.ProfileResponse;
 import app.whatsapp.commonweb.models.sessions.response.AddSessionResponse;
 import app.whatsapp.commonweb.utils.HttpUtils;
@@ -24,8 +25,8 @@ import java.util.Objects;
 @Component
 public class ChannelInterceptor implements org.springframework.messaging.support.ChannelInterceptor {
 
-    private SessionRegistryService sessionRegistryService;
-    private ProfileService profileService;
+    private final SessionRegistryService sessionRegistryService;
+    private final ProfileService profileService;
 
     public ChannelInterceptor(SessionRegistryService sessionRegistryService, ProfileService profileService) {
         this.sessionRegistryService = sessionRegistryService;
@@ -35,6 +36,7 @@ public class ChannelInterceptor implements org.springframework.messaging.support
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
+        assert accessor != null;
         if (StompCommand.CONNECT.equals(accessor.getCommand())) {
             authenticate(accessor);
         }
@@ -47,13 +49,15 @@ public class ChannelInterceptor implements org.springframework.messaging.support
     private void authenticate(StompHeaderAccessor accessor) {
         if (accessor.getUser() == null && accessor.getNativeHeader(HttpHeaders.AUTHORIZATION) != null) {
             List<String> authTokens = accessor.getNativeHeader(HttpHeaders.AUTHORIZATION);
+            assert authTokens != null;
             String authorizationHeader = authTokens.get(0).trim();
             log.info("Authorization Header : {} ", authorizationHeader);
             HttpUtils.getJwtFromAuthorizationHeader(authorizationHeader).ifPresent(jwt -> {
                 ProfileResponse profileResponse = profileService.getProfile(jwt);
+                new UserProfile();
                 if (profileResponse.getResponseStatus().getStatus().equals(CommonConstants.Alphabets.S)) {
-                    StompPrincipal stompPrincipal = new StompPrincipal(profileResponse);
-                    MDC.put(CommonConstants.Extra.USER_ID, String.valueOf(profileResponse.getId()));
+                    StompPrincipal stompPrincipal = new StompPrincipal(profileResponse.getUserProfile());
+                    MDC.put(CommonConstants.Extra.USER_ID, String.valueOf(profileResponse.getUserProfile().getId()));
                     AddSessionResponse addSessionResponse = sessionRegistryService.registerSession(stompPrincipal);
                     if (!addSessionResponse.getResponseStatus().getStatus().equals(CommonConstants.Alphabets.S)) {
                         throw new RuntimeException("failed to register session");

@@ -13,7 +13,7 @@ public enum ECommonResponseCodes implements IResponseCode {
     INVALID_PARAM("60", "F", "Invalid parameter"),
     SUCCESS("200", "S", "Success");
 
-    private String code;
-    private String status;
-    private String message;
+    private final String code;
+    private final String status;
+    private final String message;
 }

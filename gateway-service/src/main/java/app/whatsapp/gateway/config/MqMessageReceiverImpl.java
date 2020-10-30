@@ -1,6 +1,7 @@
 package app.whatsapp.gateway.config;
 
 import app.whatsapp.common.utils.JsonUtils;
+import app.whatsapp.commonweb.annotations.log.Log;
 import app.whatsapp.commonweb.hooks.MqMessageReceiver;
 import app.whatsapp.commonweb.models.gateway.Message;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +18,7 @@ import java.io.IOException;
 @Component
 public class MqMessageReceiverImpl implements MqMessageReceiver {
 
-    private SimpMessagingTemplate simpMessagingTemplate;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
     public MqMessageReceiverImpl(SimpMessagingTemplate simpMessagingTemplate) {
         this.simpMessagingTemplate = simpMessagingTemplate;
@@ -26,8 +27,8 @@ public class MqMessageReceiverImpl implements MqMessageReceiver {
     @Override
     public void handleMessage(byte[] bytes) throws IOException {
         Message message = JsonUtils.map(new String(bytes), Message.class);
-        simpMessagingTemplate.convertAndSendToUser(message.getToUserId(), "/reply", message);
         log.info("Message received from queue : {}", message);
+        simpMessagingTemplate.convertAndSendToUser(String.valueOf(message.getToUserId()), "/reply", message);
     }
 
 }

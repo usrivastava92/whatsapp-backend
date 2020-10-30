@@ -22,7 +22,7 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnProperty(value = "application.mq.enable", havingValue = "true")
 public class MqConfig {
 
-    private MqConfigProperties mqConfigProperties;
+    private final MqConfigProperties mqConfigProperties;
 
     public MqConfig(MqConfigProperties mqConfigProperties) {
         this.mqConfigProperties = mqConfigProperties;

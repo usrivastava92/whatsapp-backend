@@ -11,12 +11,8 @@ public class CreateTokenResponse extends BaseResponse {
 
     private String accessToken;
 
-    public CreateTokenResponse(IResponseCode responseCode) {
-        super(responseCode);
-    }
-
-    public CreateTokenResponse(IResponseCode iResponseCode, String accessToken) {
-        super(iResponseCode);
+    public CreateTokenResponse(String accessToken) {
         this.accessToken = accessToken;
     }
+
 }

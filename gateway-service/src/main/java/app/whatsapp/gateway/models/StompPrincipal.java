@@ -1,5 +1,6 @@
 package app.whatsapp.gateway.models;
 
+import app.whatsapp.commonweb.models.profile.UserProfile;
 import app.whatsapp.commonweb.models.profile.response.ProfileResponse;
 import lombok.Data;
 import lombok.NonNull;
@@ -12,11 +13,11 @@ import java.security.Principal;
 public class StompPrincipal implements Principal {
 
     @NonNull
-    private final ProfileResponse profile;
+    private final UserProfile userProfile;
 
     @Override
     public String getName() {
-        return String.valueOf(profile.getId());
+        return String.valueOf(userProfile.getId());
     }
 
 }

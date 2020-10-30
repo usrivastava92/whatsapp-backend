@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/session")
 public class SessionController {
 
-    private AddSessionProcessor addSessionProcessor;
-    private EvictSessionProcessor evictSessionProcessor;
+    private final AddSessionProcessor addSessionProcessor;
+    private final EvictSessionProcessor evictSessionProcessor;
 
     public SessionController(AddSessionProcessor addSessionProcessor, EvictSessionProcessor evictSessionProcessor) {
         this.addSessionProcessor = addSessionProcessor;

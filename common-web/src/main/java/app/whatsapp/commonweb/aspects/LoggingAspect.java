@@ -33,16 +33,15 @@ public class LoggingAspect {
         Method method = ((MethodSignature) proceedingJoinPoint.getSignature()).getMethod();
         boolean isControllerMethod = isControllerMethod(method);
         Log loggable = method.getAnnotation(Log.class);
-
-        String fullMethodName = new StringBuilder(proceedingJoinPoint.getSignature().getDeclaringType().getCanonicalName())
-                .append(CommonConstants.SpecialChars.DOT)
-                .append(method.getName()).toString();
+        String fullMethodName = proceedingJoinPoint.getSignature().getDeclaringType().getCanonicalName() +
+                CommonConstants.SpecialChars.DOT +
+                method.getName();
         if (loggable.args() || isControllerMethod) {
             Map<Class, Object> argMap = Arrays.stream(proceedingJoinPoint.getArgs())
-                    .collect(Collectors.toMap(arg -> arg.getClass(), arg -> arg));
+                    .collect(Collectors.toMap(Object::getClass, arg -> arg));
             Map<String, String> loggableArgs = Arrays.stream(method.getParameters())
                     .filter(i -> isLoggable(i) && argMap.get(i.getType()) != null)
-                    .collect(Collectors.toMap(i -> i.getName(), i -> argMap.get(i.getType()).toString()));
+                    .collect(Collectors.toMap(Parameter::getName, i -> argMap.get(i.getType()).toString()));
             log.info("Method args for \"{}\" are : {}", fullMethodName, loggableArgs);
         }
         Object returnValue = proceedingJoinPoint.proceed();

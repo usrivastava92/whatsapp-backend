@@ -1,38 +1,19 @@
 package app.whatsapp.commonweb.models.profile;
 
-
 import app.whatsapp.commonweb.enums.profile.EProfileStatus;
+import lombok.*;
 
-public interface UserProfile {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class UserProfile {
 
-    Long getId();
-
-    String getUsername();
-
-    String getPassword();
-
-    String getFirstname();
-
-    String getLastname();
-
-    EProfileStatus getProfileStatus();
-
-    String getEmail();
-
-    String getContactNumber();
-
-    void setUsername(String username);
-
-    void setPassword(String password);
-
-    void setFirstname(String firstname);
-
-    void setLastname(String lastname);
-
-    void setProfileStatus(EProfileStatus profileStatus);
-
-    void setEmail(String email);
-
-    void setContactNumber(String contactNumber);
+    private Long id;
+    private String username;
+    private String firstname;
+    private String lastname;
+    private String email;
+    private String contactNumber;
+    private EProfileStatus profileStatus;
 
 }

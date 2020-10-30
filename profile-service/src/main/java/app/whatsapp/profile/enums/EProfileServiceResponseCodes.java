@@ -13,8 +13,8 @@ public enum EProfileServiceResponseCodes implements IResponseCode {
     INVALID_JWT("50", "F", "Invalid JWT"),
     INVALID_TOKEN("60", "F", "Invalid token");
 
-    private String code;
-    private String status;
-    private String message;
+    private final String code;
+    private final String status;
+    private final String message;
 
 }

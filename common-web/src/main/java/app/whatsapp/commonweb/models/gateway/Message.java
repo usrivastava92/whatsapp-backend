@@ -11,11 +11,11 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class Message implements Serializable {
 
-    private String timestamp;
+    private Long timestamp;
     @JsonProperty("from")
-    private String fromUserId;
+    private Long fromUserId;
     @JsonProperty("to")
-    private String toUserId;
+    private Long toUserId;
     private String message;
 
 }

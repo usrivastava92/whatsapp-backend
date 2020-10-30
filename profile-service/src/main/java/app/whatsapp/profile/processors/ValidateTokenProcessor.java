@@ -9,6 +9,7 @@ import app.whatsapp.common.enums.ECommonResponseCodes;
 import app.whatsapp.common.models.ResponseStatus;
 import app.whatsapp.common.processors.IRequestProcessor;
 import app.whatsapp.commonweb.services.CacheService;
+import app.whatsapp.profile.utility.ModelMappingUtils;
 import org.springframework.stereotype.Component;
 
 import static app.whatsapp.profile.constants.ProfileServiceConstants.*;
@@ -18,7 +19,7 @@ import java.util.Optional;
 @Component
 public class ValidateTokenProcessor implements IRequestProcessor<ValidateTokenRequest, ValidateTokenRequest, Optional<User>, ValidateTokenResponse> {
 
-    private CacheService cacheService;
+    private final CacheService cacheService;
 
     public ValidateTokenProcessor(CacheService cacheService) {
         this.cacheService = cacheService;
@@ -41,7 +42,7 @@ public class ValidateTokenProcessor implements IRequestProcessor<ValidateTokenRe
     public ValidateTokenResponse postProcess(ValidateTokenRequest request, ValidateTokenRequest serviceRequest, Optional<User> user) {
         ValidateTokenResponse validateTokenResponse = new ValidateTokenResponse();
         if (user.isPresent()) {
-            validateTokenResponse.setUserProfile(new ProfileResponse(user.get()));
+            validateTokenResponse.setUserProfile(ModelMappingUtils.getUserProfile(user.get()));
             validateTokenResponse.setValid(true);
             validateTokenResponse.setResponseStatus(new ResponseStatus(ECommonResponseCodes.SUCCESS));
         }

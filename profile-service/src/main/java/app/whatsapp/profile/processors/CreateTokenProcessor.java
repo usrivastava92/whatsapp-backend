@@ -1,5 +1,6 @@
 package app.whatsapp.profile.processors;
 
+import app.whatsapp.common.models.ResponseStatus;
 import app.whatsapp.commonweb.models.profile.response.CreateTokenResponse;
 import app.whatsapp.common.enums.ECommonResponseCodes;
 import app.whatsapp.common.processors.IRequestProcessor;
@@ -16,7 +17,7 @@ import static app.whatsapp.profile.constants.ProfileServiceConstants.*;
 @Component
 public class CreateTokenProcessor implements IRequestProcessor<User, User, String, CreateTokenResponse> {
 
-    private CacheService cacheService;
+    private final CacheService cacheService;
 
     @Value("${application.access-token.expiry.seconds:60}")
     private long accessTokenExpiry;
@@ -32,18 +33,18 @@ public class CreateTokenProcessor implements IRequestProcessor<User, User, Strin
 
     @Override
     public String onProcess(User user, User serviceRequest) {
-        String accessToken = new StringBuilder()
-                .append(RandomStringUtils.randomAlphanumeric(4))
-                .append(System.currentTimeMillis())
-                .append(RandomStringUtils.randomAlphanumeric(4))
-                .toString();
+        String accessToken = RandomStringUtils.randomAlphanumeric(4) +
+                System.currentTimeMillis() +
+                RandomStringUtils.randomAlphanumeric(4);
         cacheService.set(accessToken, user, Duration.ofSeconds(accessTokenExpiry));
         return accessToken;
     }
 
     @Override
     public CreateTokenResponse postProcess(User request, User serviceRequest, String accessToken) {
-        return new CreateTokenResponse(ECommonResponseCodes.SUCCESS, accessToken);
+        CreateTokenResponse createTokenResponse = new CreateTokenResponse(accessToken);
+        createTokenResponse.setResponseStatus(new ResponseStatus(ECommonResponseCodes.SUCCESS));
+        return createTokenResponse;
     }
 
 }

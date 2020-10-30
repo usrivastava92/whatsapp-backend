@@ -4,6 +4,7 @@ import app.whatsapp.profile.entities.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
@@ -12,5 +13,6 @@ public interface UserService {
     Optional<User> findUserById(Long id);
     User update(User user);
     User addUser(User user);
+    List<User> getConnections(User user);
 
 }

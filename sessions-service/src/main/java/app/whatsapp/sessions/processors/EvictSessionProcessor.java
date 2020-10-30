@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class EvictSessionProcessor implements IRequestProcessor<EvictSessionRequest, EvictSessionRequest, EvictSessionResponse, EvictSessionResponse> {
 
-    private CacheService cacheService;
+    private final CacheService cacheService;
 
     public EvictSessionProcessor(CacheService cacheService) {
         this.cacheService = cacheService;

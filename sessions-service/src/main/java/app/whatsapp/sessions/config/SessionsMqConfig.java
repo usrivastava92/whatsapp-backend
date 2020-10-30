@@ -29,10 +29,10 @@ public class SessionsMqConfig {
     }
 
     @Bean
-    public SimpleMessageListenerContainer container(ConnectionFactory connectionFactory, MessageListenerAdapter messageListenerAdapter) {
+    public SimpleMessageListenerContainer container(ConnectionFactory connectionFactory, MessageListenerAdapter messageListenerAdapter, Queue incomingMessageQueue) {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
-        container.setQueues(incomingMessagesQueue());
+        container.setQueues(incomingMessageQueue);
         container.setMessageListener(messageListenerAdapter);
         return container;
     }

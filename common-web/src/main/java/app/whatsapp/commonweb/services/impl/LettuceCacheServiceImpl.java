@@ -58,17 +58,6 @@ public class LettuceCacheServiceImpl implements CacheService {
     }
 
     @Override
-    public void hSet(String key, Serializable field, Serializable value) {
-        template.opsForHash().put(key, field, value);
-    }
-
-    @Override
-    public void hSet(String key, Serializable field, Serializable value, Duration ttl) {
-        template.opsForHash().put(key, field, value);
-        this.expire(key, ttl);
-    }
-
-    @Override
     public void del(String key) {
         template.delete(key);
     }
@@ -105,17 +94,17 @@ public class LettuceCacheServiceImpl implements CacheService {
     }
 
     @Override
-    public void hDel(String key, Serializable field) {
+    public void hDel(String key, String field) {
         template.opsForHash().delete(key, field);
     }
 
     @Override
-    public boolean hExists(String key, Serializable field) {
+    public boolean hExists(String key, String field) {
         return template.opsForHash().hasKey(key, field);
     }
 
     @Override
-    public Optional<Serializable> hGet(String key, Serializable field) {
+    public Optional<Serializable> hGet(String key, String field) {
         return Optional.ofNullable((Serializable) template.opsForHash().get(key, field));
     }
 
@@ -125,7 +114,7 @@ public class LettuceCacheServiceImpl implements CacheService {
     }
 
     @Override
-    public void hIncBy(String key, Serializable field, long incBy) {
+    public void hIncBy(String key, String field, long incBy) {
         template.opsForHash().increment(key, field, incBy);
     }
 
@@ -135,16 +124,27 @@ public class LettuceCacheServiceImpl implements CacheService {
     }
 
     @Override
-    public void hSetNx(String key, Serializable field, Serializable value) {
+    public void hSet(String key, String field, Serializable value) {
+        template.opsForHash().put(key, field, value);
+    }
+
+    @Override
+    public void hSet(String key, String field, Serializable value, Duration ttl) {
+        template.opsForHash().put(key, field, value);
+        this.expire(key, ttl);
+    }
+
+    @Override
+    public void hSetNx(String key, String field, Serializable value) {
         template.opsForHash().putIfAbsent(key, field, value);
     }
 
     @Override
-    public <T extends Serializable> Optional<T> hGet(String key, Serializable field, Class<T> tClass) {
+    public <T extends Serializable> Optional<T> hGet(String key, String field, Class<T> tClass) {
         return Optional.ofNullable((T) template.opsForHash().get(key, field));
     }
 
-    private final long toSeconds(Duration duration) {
+    private long toSeconds(Duration duration) {
         return duration.toMillis() / 1000;
     }
 }

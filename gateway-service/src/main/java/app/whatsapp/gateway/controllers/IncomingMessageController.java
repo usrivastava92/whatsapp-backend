@@ -1,5 +1,6 @@
 package app.whatsapp.gateway.controllers;
 
+import app.whatsapp.commonweb.annotations.log.Log;
 import app.whatsapp.commonweb.models.gateway.Message;
 import app.whatsapp.gateway.models.StompPrincipal;
 import app.whatsapp.gateway.service.MqMessagePublisher;
@@ -13,20 +14,18 @@ import java.security.Principal;
 @Controller
 public class IncomingMessageController {
 
-    private SimpMessagingTemplate template;
-    private MqMessagePublisher mqMessagePublisher;
+    private final MqMessagePublisher mqMessagePublisher;
 
-    public IncomingMessageController(SimpMessagingTemplate template, MqMessagePublisher mqMessagePublisher) {
-        this.template = template;
+    public IncomingMessageController(MqMessagePublisher mqMessagePublisher) {
         this.mqMessagePublisher = mqMessagePublisher;
     }
 
-    @MessageMapping("/test")
-    public void mapping(Message message, Principal principal) {
+    @Log(args = true)
+    @MessageMapping("/send")
+    public void mapping(@Log Message message, Principal principal) {
         StompPrincipal stompPrincipal = (StompPrincipal) principal;
-        log.info("message received : {} : {}", message, stompPrincipal);
-        message.setFromUserId(stompPrincipal.getName());
-        message.setTimestamp(String.valueOf(System.currentTimeMillis()));
+        message.setFromUserId(stompPrincipal.getUserProfile().getId());
+        message.setTimestamp(System.currentTimeMillis());
         mqMessagePublisher.send(message);
     }
 

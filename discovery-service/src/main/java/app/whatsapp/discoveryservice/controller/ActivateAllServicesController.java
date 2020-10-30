@@ -1,4 +1,4 @@
-package app.whatsapp.discoveryservice.schedulers;
+package app.whatsapp.discoveryservice.controller;
 
 import com.netflix.discovery.shared.Applications;
 import com.netflix.eureka.EurekaServerContextHolder;
@@ -9,15 +9,18 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 
 /*
 Hack scheduler to keep heroku servers alive
  */
 @Slf4j
-@Component
+@Controller
 @Profile("prod")
-public class HeartBeatScheduler {
+public class ActivateAllServicesController {
 
     @Value("${application.web.protocol:http}://${HOSTNAME}${eureka.dashboard.path}")
     private String selfUrl;
@@ -26,11 +29,11 @@ public class HeartBeatScheduler {
 
     private final RestTemplate restTemplate;
 
-    public HeartBeatScheduler(RestTemplate restTemplate) {
+    public ActivateAllServicesController(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
-    @Scheduled(fixedDelayString = "${applications.heartbeat.millis}")
+    @GetMapping("/activate")
     public void heartbeat() {
         PeerAwareInstanceRegistry registry = EurekaServerContextHolder.getInstance().getServerContext().getRegistry();
         Applications applications = registry.getApplications();

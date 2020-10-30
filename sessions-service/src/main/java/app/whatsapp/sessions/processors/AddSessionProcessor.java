@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class AddSessionProcessor implements IRequestProcessor<AddSessionRequest, AddSessionRequest, AddSessionResponse, AddSessionResponse> {
 
-    private CacheService cacheService;
+    private final CacheService cacheService;
 
     public AddSessionProcessor(CacheService cacheService) {
         this.cacheService = cacheService;
