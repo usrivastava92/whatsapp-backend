@@ -1,0 +1,11 @@
+application:
+    web:
+        protocol: https
+eureka:
+    client:
+        serviceUrl:
+            defaultZone: https://whatsapp-discovery-service.herokuapp.com/eureka
+    instance:
+        non-secure-port-enabled: false
+        secure-port: 443
+        secure-port-enabled: true

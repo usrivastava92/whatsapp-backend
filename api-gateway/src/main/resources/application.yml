@@ -1,0 +1,35 @@
+eureka:
+    instance:
+        health-check-url: ${application.web.protocol}://${HOSTNAME:localhost:${server.port}}${server.servlet.context-path:}/actuator/health
+        home-page-url: ${application.web.protocol}://${HOSTNAME:localhost:${server.port}}/
+        hostname: ${HOSTNAME:localhost}
+        instance-id: ${EUREKA_INSTANCE_ID:1}
+        secure-health-check-url: ${application.web.protocol}://${HOSTNAME:localhost:${server.port}}${server.servlet.context-path:}/actuator/health
+        status-page-url: ${application.web.protocol}://${HOSTNAME:localhost:${server.port}}${server.servlet.context-path:}/actuator/info
+logging:
+    file:
+        name: ${spring.application.name}.log
+    level:
+        root: INFO
+    pattern:
+        console: '%clr(${logging.pattern.dateformat}){yellow}  [%clr(%t){blue}] %clr(%5p)
+            %clr({%mdc}){magenta} %clr(%c:%L){cyan} - %msg%n'
+        dateformat: '%d{yyyy-MM-dd HH:mm:ss.SSS}'
+        file: ${logging.pattern.dateformat} [%t] %5p {%mdc} %c:%L - %msg%n
+        rolling-file-name: ${spring.application.name}-%d{yyyy-MM-dd}.log
+management:
+    endpoints:
+        web:
+            exposure:
+                include: '*'
+server:
+    port: ${PORT:9204}
+spring:
+    application:
+        name: whatsapp-api-gateway
+    cloud:
+        loadbalancer:
+            ribbon:
+                enabled: false
+    profiles:
+        active: '@spring.profiles.active@'

@@ -1,0 +1,10 @@
+application:
+    web:
+        protocol: http
+eureka:
+    client:
+        serviceUrl:
+            defaultZone: http://localhost:8770/eureka
+    instance:
+        non-secure-port-enabled: true
+        secure-port-enabled: false
