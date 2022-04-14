@@ -14,5 +14,6 @@
       "matchDepTypes": ["devDependencies"],
       "automerge": true
     }
-  ]
+  ],
+  "requiredStatusChecks": null
 }
