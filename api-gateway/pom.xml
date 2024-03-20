@@ -15,7 +15,7 @@
     <name>api-gateway</name>
 
     <properties>
-        <maven.compiler.plugin>3.12.1</maven.compiler.plugin>
+        <maven.compiler.plugin>3.13.0</maven.compiler.plugin>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <spring-cloud.version>2023.0.0</spring-cloud.version>
