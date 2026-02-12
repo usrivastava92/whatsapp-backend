@@ -50,7 +50,7 @@
                 <dependency>
                     <groupId>com.newrelic.agent.java</groupId>
                     <artifactId>newrelic-java</artifactId>
-                    <version>9.0.0</version>
+                    <version>9.1.0</version>
                     <scope>provided</scope>
                     <type>zip</type>
                 </dependency>
